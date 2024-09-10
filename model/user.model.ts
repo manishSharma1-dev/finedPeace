@@ -4,9 +4,7 @@ export interface User extends Document {
     username : string,
     fullName : string,
     email : string,
-    password : string,
-    verificationCode : string,
-    verificationCodeExpiry : Date
+    password : string
 }
 
 const UserSchema:Schema<User>  = new Schema({
@@ -27,14 +25,6 @@ const UserSchema:Schema<User>  = new Schema({
     password : {
         type : String,
         required :true
-    },
-    verificationCode : {
-        type : String,
-        required :[true,"Verifiaction Code is Neccessay"]
-    },
-    verificationCodeExpiry : {
-        type: Date,
-        required: true
     }
 })
 
