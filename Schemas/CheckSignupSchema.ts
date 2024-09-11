@@ -1,14 +1,8 @@
 import { z } from "zod";
 
-const CheckUserName = z.object({
-    username : z
-    .string()
-    .min(7,"Username Must Be atleast Greater then ")
-    .max(30,"Username must not Greater then 30")
-})
-
 const CheckSignupSchema = z.object({
-    username : CheckUserName,
+    username : z.string(),
+    fullName : z.string(),
     email : z.string(),
     password: z
     .string()
@@ -17,6 +11,5 @@ const CheckSignupSchema = z.object({
 })
 
 export { 
-    CheckSignupSchema,
-    CheckUserName
+    CheckSignupSchema
 }
