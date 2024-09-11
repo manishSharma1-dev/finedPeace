@@ -1,6 +1,7 @@
 import mongoose,{ Schema,Document } from "mongoose";
 
 export interface User extends Document {
+    
     username : string,
     fullName : string,
     email : string,
@@ -30,7 +31,7 @@ const UserSchema:Schema<User>  = new Schema({
 
 // Checkng if the user model is already Credated if no then crete an User model
 
-const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model("UserModel",UserSchema)
+const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model("User",UserSchema)
 
 export {
     UserModel
