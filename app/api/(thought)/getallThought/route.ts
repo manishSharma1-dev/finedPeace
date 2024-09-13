@@ -1,10 +1,27 @@
 import { thoughtModel } from "@/model/thoughts.model";
 import { ConnectDb } from "@/connections/dbConnect";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function GET(request:Request) {
     await ConnectDb()
 
     try {
+
+        const session = await getServerSession(authOptions)
+
+        if(!session){
+            return Response.json(
+                {
+                    success  :false,
+                    message : "Login -pls"
+                },
+                {
+                    status : 400
+                }
+            )
+        }
+
 
         const response = await thoughtModel.find({ })
 
