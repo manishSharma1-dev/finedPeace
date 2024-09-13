@@ -27,7 +27,7 @@ const UserSchema:Schema<User>  = new Schema({
         type : String,
         required :true
     }
-})
+}, { timestamps  : true})
 
 // Checkng if the user model is already Credated if no then crete an User model
 
