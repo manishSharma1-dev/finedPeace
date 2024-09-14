@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { Asterisk,MessageSquareQuote } from "lucide-react"
+import { Asterisk,MessageSquareQuote,XSquare } from "lucide-react"
 import { useForm,FormProvider  } from 'react-hook-form'
 import { checkthoughtSchema } from '@/Schemas/CheckthoughtSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -50,13 +50,20 @@ export default function page() {
 
 
   return (
-   <div className='flex gap-[2%] overflow-hidden'>
+   <div className='flex gap-[2%]'>
 
-     <div className='w-[65%] border-r border-white border-opacity-20 h-[46rem] pt-10'>
-       <div className='flex flex-col gap-2 text-sm w-96'>
-        <p>by -Username</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque sequi, facere velit doloribus ad in perspiciatis provident qui eaque eveniet</p>
-       </div>
+     <div className='w-[65%] border-r border-white border-opacity-20 h-[46rem] pt-10 overflow-y-auto scrollbar-hide  '>
+      <div className='flex flex-col gap-5 h-auto '>
+
+
+        <div className='flex flex-col gap-2 text-sm w-[30rem] bg-zinc-800 pt-2 pb-2 pl-4 pr-4 rounded'>
+          <div className='flex items-center justify-between pb-2'><span>by -username</span><XSquare size={14} className='hover:opacity-40'/></div>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque sequi, facere velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto odio saepe a harum error omnis at voluptate, dolorem pariatur, velit voluptas sit molestiae perferendis, suscipit labore expedita distinctio eaque eveniet? loe
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsum eos iste placeat quos dolorem recusandae magnam blanditiis reiciendis sapiente eaque eveniet iusto doloremque aperiam at, soluta tenetur perspiciatis sint ducimus. Lorem, ipsum dolor sit amet consectetur adipisicing elit. In expedita ratione rem omnis at recusandae iusto atque voluptate ab non, velit accusantium soluta officia? Numquam ex odio tenetur sunt dolorum? doloribus ad in perspiciatis provident qui eaque eveniet</p>
+        </div>
+
+
+      </div>
      </div>
 
      <div className='w-[33%] pt-10 pl-5'>
