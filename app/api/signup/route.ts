@@ -1,6 +1,8 @@
 import { UserModel } from "@/model/user.model";
 import { ConnectDb } from "@/connections/dbConnect";
 import bcrypt from "bcryptjs"
+import { Apiresponse } from "@/types/ApiResposne";
+import { NextResponse } from "next/server";
 
 export async function POST(request:Request) {
     // User SignUp 
@@ -15,9 +17,10 @@ export async function POST(request:Request) {
 
     try {
         
-        const { username, fullname, email, password} = await request.json()
+        const { username, fullName, email, password} = await request.json()
+        // console.log("getting data fiels",username,fullName,email,password)
 
-        if(!username && !fullname && !email && !password){
+        if(!username && !fullName && !email && !password){
             return Response.json(
                 {
                     success  : false,
@@ -49,7 +52,7 @@ export async function POST(request:Request) {
 
         const user = await UserModel.create({
             username : username,
-            fullName : fullname,
+            fullName : fullName,
             email : email,
             password : hashedPassword
         })
@@ -70,10 +73,20 @@ export async function POST(request:Request) {
 
         await user.save({ validateBeforeSave  : true })
 
-        return Response.json(
+        // return Response.json(
+        //     {
+                // success : true,
+                // message : "User Registered"
+        //     },
+        //     {
+        //         status : 201
+        //     }
+        // )
+
+        return NextResponse.json(
             {
-                success : true,
-                message : "User Registered"
+                 success : true,
+                 message : "User Registered"
             },
             {
                 status : 201

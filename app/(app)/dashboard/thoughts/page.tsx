@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Asterisk,MessageSquareQuote,XSquare } from "lucide-react"
 import { useForm,FormProvider  } from 'react-hook-form'
 import { checkthoughtSchema } from '@/Schemas/CheckthoughtSchema'
@@ -13,6 +13,8 @@ import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessa
 import { Textarea } from '@/components/ui/textarea'
 
 export default function page() {
+  const [thoughtformBackend,setthoughtfromBackend] = useState([])
+  const [refresh,setrefresh] = useState(false)
 
   const { toast } = useToast()
 
@@ -47,6 +49,30 @@ export default function page() {
     })
 
   }
+
+  useEffect(() =>{
+    setrefresh(true)
+    const fetchallthoudhtfrombackend = async() => {
+      try {
+
+        const response = await axios.get('/api/getallThought')
+        if(!response){
+          throw new Error("No thought are here")
+        }
+
+        console.log("thought found")
+        const result = await response.data
+
+        setthoughtfromBackend(result)
+        
+      } catch (error) {
+        console.error("Loading Thought Failed",error)
+      }
+    }
+
+    // fetchallthoudhtfrombackend()
+    setrefresh(false)
+  },[refresh])
 
 
   return (

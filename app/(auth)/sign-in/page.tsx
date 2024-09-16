@@ -1,8 +1,9 @@
-import React from 'react'
+"use client"
+
 import * as z from 'zod'
 import { CheckSignInSchema } from '@/Schemas/CheckSignInSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
@@ -39,48 +40,53 @@ export default function page() {
   }
 
   return (
-    <div>
+    <div className='pt-28 '>
+      <div className='flex justify-center items-center'>
+        <div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormProvider {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              
+              {/* for username */}
+
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Username : </FormLabel>
+                      <FormControl>
+                        <Input type='email' placeholder="Email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password : </FormLabel>
+                      <FormControl>
+                        <Input type='password' placeholder="Password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button type='submit'>Sign-in</Button>
+
+            </form>
+          </FormProvider>
           
-          {/* for username */}
+          <div className='text-sm pt-4'>
+            <p>New Member ? <span className='text-center text-blue-600 hover:text-blue-500'><Link href={'/sign-up'}>Register</Link></span></p>
+          </div>
+        </div>
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username : </FormLabel>
-                  <FormControl>
-                    <Input type='email' placeholder="Email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password : </FormLabel>
-                  <FormControl>
-                    <Input type='password' placeholder="Password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button type='submit'>Sign-in</Button>
-
-        </form>
-      </Form>
-      
-      <div className='text-sm'>
-        <p>New Member ? <span className='text-center text-blue-600 hover:text-blue-500'><Link href={'/sign-up'}>Register</Link></span></p>
       </div>
     </div>
   )

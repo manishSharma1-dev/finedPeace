@@ -1,8 +1,7 @@
 "use client"
 
-import React from 'react'
 import * as z from 'zod'
-import { Form, useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckSignupSchema } from "@/Schemas/CheckSignupSchema"
 import axios from "axios"
@@ -11,7 +10,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessa
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 
-export function page() {
+export default function page() {
 
     const form = useForm<z.infer<typeof CheckSignupSchema>>({
         resolver  : zodResolver(CheckSignupSchema),
@@ -46,84 +45,88 @@ export function page() {
     }
 
   return (
-    <div>
+    <div className='pt-28 '>
+      <div className='flex justify-center items-center'>
+        <div>
 
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        
-        {/* for username */}
+          <FormProvider {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              
+              {/* for username */}
 
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username : </FormLabel>
-              <FormControl>
-                <Input type='text' placeholder="Username" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username : </FormLabel>
+                    <FormControl>
+                      <Input type='text' placeholder="Username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        {/* for fullname */}
+              {/* for fullname */}
 
-        <FormField
-          control={form.control}
-          name="fullName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fullname : </FormLabel>
-              <FormControl>
-                <Input type='text' placeholder="FullName" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Fullname : </FormLabel>
+                    <FormControl>
+                      <Input type='text' placeholder="FullName" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        {/* for emial  */}
+              {/* for emial  */}
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email : </FormLabel>
-              <FormControl>
-                <Input type='email' placeholder="Email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email : </FormLabel>
+                    <FormControl>
+                      <Input type='email' placeholder="Email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        {/* for password  */}
+              {/* for password  */}
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password : </FormLabel>
-              <FormControl>
-                <Input type='Password' placeholder="Password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password : </FormLabel>
+                    <FormControl>
+                      <Input type='Password' placeholder="Password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <Button type='submit'>Sign-up</Button>
-        
-      </form>
-    </Form>
+              <Button type='submit'>Sign-up</Button>
+              
+            </form>
+          </FormProvider>
 
-    <div className='text-sm'>
-        <p>Already a member ? <span className='text-center text-blue-600 hover:text-blue-500 '><Link href={'/sign-in'}>Login</Link></span></p>
-    </div>
-      
+          <div className='text-sm pt-4'>
+              <p>Already a member ? <span className='text-center text-blue-600 hover:text-blue-500 '><Link href={'/sign-in'}>Login</Link></span></p>
+          </div>
+          
+        </div>
+      </div>
     </div>
   )
 }
