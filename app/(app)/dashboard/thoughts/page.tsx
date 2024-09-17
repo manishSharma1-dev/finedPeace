@@ -25,9 +25,9 @@ export default function page() {
     }
   })
 
-  const onSubmit = async (data:z.infer<typeof checkthoughtSchema>) => {
+  const onSubmit = async(data:z.infer<typeof checkthoughtSchema>) => {
     
-    const response = await axios.post('/api/add-thought',data)
+    const response = await axios.post('/api/add-thought', data )
 
     if(!response){
 
@@ -43,14 +43,10 @@ export default function page() {
 
     console.log("thought added",response.data)
 
-    toast({
-      title : "thought -added",
-      description : (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(response.data, null, 2)}</code>
-        </pre>
-      )
-    })
+      toast({
+        title : "thought -added",
+        description : "thought added Successfully"
+      })
     
   }
 
@@ -60,21 +56,25 @@ export default function page() {
       try {
 
         const response = await axios.get('/api/getallThought')
+
         if(!response){
           throw new Error("No thought are here")
         }
 
         console.log("thought found")
+
         const result = await response.data
 
         setthoughtfromBackend(result)
+
+        console.log("thoughts as a resposne received",result.data)
         
       } catch (error) {
         console.error("Loading Thought Failed",error)
       }
     }
 
-    // fetchallthoudhtfrombackend()
+    fetchallthoudhtfrombackend()
     setrefresh(false)
   },[refresh])
 

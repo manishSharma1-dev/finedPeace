@@ -29,13 +29,14 @@ export async function POST(request:Request) {
 
         // const useremail = session.user?.email
         const userId = session.user?._id
-        // const username_from_the_session = session.user?.username
+        const session_username = session.user?.username
 
         // const user = await UserModel.findOne({
         //     email : useremail
         // })
 
         const user = await UserModel.findById(userId)
+        
 
         
         if(!user){
@@ -57,7 +58,7 @@ export async function POST(request:Request) {
         console.log("thougth fromt the frontend",typeof(thought))
 
         const thoughtCreated = await thoughtModel.create({
-            username : userId, // wait focus here i need to pass th id fiedl cuz in thought model i had set the username field with object id and no user?.username shall be here
+            username : session_username,
             content : thought
         })
 

@@ -1,14 +1,14 @@
 import mongoose,{ Schema,Document  } from "mongoose";
 
 export interface Thought extends Document{
-    username : Schema.Types.ObjectId
+    username : string
     content : string
 }
 
 const thoughtSchema:Schema<Thought> = new Schema({
     username : {
-        type : Schema.Types.ObjectId,
-        ref : "User"
+       type : String,
+       required : true
     },
     content : {
         type : String,
