@@ -1,14 +1,17 @@
+"use client"
 
 import { Navbar } from "@/components/landingpage/Navbar"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { AuthProvider } from "@/context/Authprovider"
+import { signOut } from "next-auth/react"
 
 interface Dashboardlayoutprops {
   children : React.ReactNode
 }
 
 const DashboardLayout: React.FC<Dashboardlayoutprops> = (props) => {
+
   return (
     <AuthProvider>
       <div className="bg-black min-h-screen text-white overflow-hidden">
@@ -34,7 +37,7 @@ const DashboardLayout: React.FC<Dashboardlayoutprops> = (props) => {
                   </div>
 
                   <div className='text-xs'>
-                    <Button className='hover:bg-white hover:text-black'>Logout</Button>
+                    <Button className='hover:bg-white hover:text-black' onClick={() => signOut({ callbackUrl: '/sign-in' })}>Logout</Button>
                   </div>
 
               </div>
