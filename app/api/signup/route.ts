@@ -1,7 +1,6 @@
 import { UserModel } from "@/model/user.model";
 import { ConnectDb } from "@/connections/dbConnect";
 import bcrypt from "bcryptjs"
-import { Apiresponse } from "@/types/ApiResposne";
 import { NextResponse } from "next/server";
 
 export async function POST(request:Request) {
@@ -72,16 +71,6 @@ export async function POST(request:Request) {
         }
 
         await user.save({ validateBeforeSave  : true })
-
-        // return Response.json(
-        //     {
-                // success : true,
-                // message : "User Registered"
-        //     },
-        //     {
-        //         status : 201
-        //     }
-        // )
 
         return NextResponse.json(
             {

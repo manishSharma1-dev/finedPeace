@@ -9,8 +9,11 @@ import { Button } from '@/components/ui/button'
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function page() {
+
+  const router = useRouter()
 
     const form = useForm<z.infer<typeof CheckSignupSchema>>({
         resolver  : zodResolver(CheckSignupSchema),
@@ -37,6 +40,8 @@ export default function page() {
 
             console.log("Registration Successfull")
             console.log("Server Reponse",response.data)
+
+            router.replace('/sign-in') //move to sign-in page
 
         } catch (error) {
             console.error("User Registration failed",error)
