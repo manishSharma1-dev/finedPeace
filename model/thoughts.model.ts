@@ -1,11 +1,11 @@
-import mongoose,{ Schema, Types } from "mongoose";
+import mongoose,{ Schema,Document  } from "mongoose";
 
-export interface thought extends Document{
-    username : Types.ObjectId,
+export interface Thought extends Document{
+    username : Schema.Types.ObjectId
     content : string
 }
 
-const thoughtSchema:Schema<thought> = new Schema({
+const thoughtSchema:Schema<Thought> = new Schema({
     username : {
         type : Schema.Types.ObjectId,
         ref : "User"
@@ -16,8 +16,8 @@ const thoughtSchema:Schema<thought> = new Schema({
     }
 },{ timestamps : true })
 
-const thoughtModel = (mongoose.models.thought as mongoose.Model<thought>) || mongoose.model("thoughtModel",thoughtSchema)
+const thoughtModel = (mongoose.models.Thought as mongoose.Model<Thought>) || mongoose.model("Thought",thoughtSchema)
 
-export {
+export { 
     thoughtModel
 }

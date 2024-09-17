@@ -26,18 +26,22 @@ export default function page() {
   })
 
   const onSubmit = async (data:z.infer<typeof checkthoughtSchema>) => {
+    
     const response = await axios.post('/api/add-thought',data)
 
     if(!response){
 
       toast({
         title : "Adding thought failed",
-        description : "Adding thought Failed"
+        description : "Adding thought Failed",
+        variant : 'destructive'
       })
 
       throw new Error("Response Didn't Received")
 
     }
+
+    console.log("thought added",response.data)
 
     toast({
       title : "thought -added",
@@ -47,7 +51,7 @@ export default function page() {
         </pre>
       )
     })
-
+    
   }
 
   useEffect(() =>{
