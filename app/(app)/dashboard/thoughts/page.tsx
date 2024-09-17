@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 
+
 export default function page() {
   const [thoughtformBackend,setthoughtfromBackend] = useState([])
   const [refresh,setrefresh] = useState(false)
@@ -25,8 +26,11 @@ export default function page() {
     }
   })
 
+
   const onSubmit = async(data:z.infer<typeof checkthoughtSchema>) => {
     
+    setrefresh(true)
+
     const response = await axios.post('/api/add-thought', data )
 
     if(!response){
@@ -47,11 +51,13 @@ export default function page() {
         title : "thought -added",
         description : "thought added Successfully"
       })
+
+      form.reset()
     
   }
 
   useEffect(() =>{
-    setrefresh(true)
+
     const fetchallthoudhtfrombackend = async() => {
       try {
 
@@ -65,7 +71,7 @@ export default function page() {
 
         const result = await response.data
 
-        setthoughtfromBackend(result)
+        setthoughtfromBackend(result.data)
 
         console.log("thoughts as a resposne received",result.data)
         
@@ -79,18 +85,50 @@ export default function page() {
   },[refresh])
 
 
+  async function handledeltethoughtfromthebackend(thoughtID:string) {
+      
+      console.log("Id of the thought to be deleted",thoughtID)
+
+      const response = await axios.delete(`/api/delete-thought/${thoughtID}`)
+
+     setrefresh(true)
+
+      if(!response){
+
+        toast({
+          title : "Deleting thought failed",
+          description : "Deleting thought Failed",
+          variant : 'destructive'
+        })
+
+      throw new Error("Response Didn't Received")
+
+    } 
+
+
+    toast({
+      title : "thought Deleted",
+      description : "thought deleted"
+    })
+
+    console.log("thought deleted")
+  }
+
   return (
    <div className='flex gap-[2%]'>
 
      <div className='w-[65%] border-r border-white border-opacity-20 h-[46rem] pt-10 overflow-y-auto scrollbar-hide  '>
       <div className='flex flex-col gap-5 h-auto '>
 
-
-        <div className='flex flex-col gap-2 text-sm w-[30rem] bg-zinc-800 pt-2 pb-2 pl-4 pr-4 rounded'>
-          <div className='flex items-center justify-between pb-2'><span>by -username</span><XSquare size={14} className='hover:opacity-40'/></div>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque sequi, facere velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto odio saepe a harum error omnis at voluptate, dolorem pariatur, velit voluptas sit molestiae perferendis, suscipit labore expedita distinctio eaque eveniet? loe
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsum eos iste placeat quos dolorem recusandae magnam blanditiis reiciendis sapiente eaque eveniet iusto doloremque aperiam at, soluta tenetur perspiciatis sint ducimus. Lorem, ipsum dolor sit amet consectetur adipisicing elit. In expedita ratione rem omnis at recusandae iusto atque voluptate ab non, velit accusantium soluta officia? Numquam ex odio tenetur sunt dolorum? doloribus ad in perspiciatis provident qui eaque eveniet</p>
+      {Array.isArray(thoughtformBackend) && thoughtformBackend.map((thoughtField:any,index:number) => (
+        <div className='flex flex-col gap-2 text-sm w-[30rem] bg-zinc-800 pt-2 pb-2 pl-4 pr-4 rounded' key={index}>
+          <div className='flex items-center justify-between pb-2'>
+            <span>{`by - ${thoughtField?.username}`}</span>
+            <XSquare size={14} className='hover:opacity-40' onClick={() => handledeltethoughtfromthebackend(thoughtField?._id)} />
+          </div>
+          <p>{thoughtField?.content}</p>
         </div>
+      ))}
 
 
       </div>
@@ -123,7 +161,7 @@ export default function page() {
                     <FormControl className='w-72'>
                       <Textarea
                         placeholder="Tell us a little bit about yourself"
-                        className="resize-none" 
+                        className="resize-none overflow-y-auto scrollbar-hide" 
                         {...field}
                         rows={8}
                       />
@@ -145,3 +183,5 @@ export default function page() {
    </div>
   )
 }
+
+

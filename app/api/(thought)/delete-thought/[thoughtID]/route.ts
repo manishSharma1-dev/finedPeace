@@ -4,7 +4,7 @@ import { authOptions } from "../../../auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 
 
-export async function DELETE(request:Request, params:any) {
+export async function DELETE(request:Request, { params } : { params : any }) {
     await ConnectDb()
 
     try {
@@ -23,9 +23,13 @@ export async function DELETE(request:Request, params:any) {
             )
         }
 
+        const { thoughtID } = params;
 
-        const response = await thoughtModel.findByIdAndDelete(params?.thoughtID)
+        console.log("Thought id from the frontend",thoughtID)
 
+        const response = await thoughtModel.findByIdAndDelete(thoughtID)
+
+     
         if(!response){
             return Response.json(
                 {

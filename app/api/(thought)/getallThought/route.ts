@@ -22,7 +22,7 @@ export async function GET(request:Request) {
             )
         }
 
-        const response = await thoughtModel.find({ })
+        const response = await thoughtModel.find({ }).sort({ createdAt : -1 })
 
         if(!response){
             return Response.json(
