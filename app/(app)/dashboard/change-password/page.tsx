@@ -17,7 +17,7 @@ export default function page() {
     const router = useRouter()
 
     function movetoSignIn(){
-      router.replace('/sing-in')
+      router.replace('/sign-in')
     }
 
     const form = useForm<z.infer<typeof checkPasswordSchema>>({
@@ -30,10 +30,7 @@ export default function page() {
 
     const onSubmit = async(data : z.infer<typeof checkPasswordSchema>) => {
 
-        const response = await axios.post('/api/change-password',{
-          oldpassword  : data?.oldpassword,
-          newpassword  : data?.newpassword
-        })
+        const response = await axios.post('/api/change-password',data)
 
         if(!response){
           

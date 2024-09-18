@@ -9,7 +9,8 @@ export async function POST(request:Request) {
 
     try {
 
-        const { newpassword, oldpassword } = await request.json()
+        const { oldpassword,newpassword } = await request.json()
+
         //user provide - old password
         //old password will be matched - if no then return null
         // if yes - update the old password with thw new onw 
@@ -36,15 +37,13 @@ export async function POST(request:Request) {
             throw new Error("User not -Found")
         }
 
-        const result = await bcrypt.compare(oldpassword,user?.password)
-
-        if(!result){
+        if(oldpassword !== user.password){
             throw new Error("Password didn't -match")
         }
 
         user.password = newpassword
 
-        await user.save({ validateBeforeSave : true })
+        await user.save({ validateBeforeSave : true })        
 
         return Response.json(
             {

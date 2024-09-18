@@ -1,14 +1,20 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useToast } from '@/hooks/use-toast'
 
+interface userdata {
+  username : string,
+  fullName : string,
+  email : string
+}
+
 export default function page() {
-  const [userdata,setUserData] = useState({})
+  const [userdata,setUserData] = useState<userdata | null>(null)
   const [refresh,setRefresh] = useState(false)
 
   const { toast } = useToast()
@@ -19,7 +25,10 @@ export default function page() {
     router.replace('/dashboard/change-password')
   }
 
-  useState(() => {
+  useEffect(() => {
+
+    setRefresh(true)
+
     async function UserprofileData () {
       const response = await axios.get('/api/userprofile')
 
@@ -29,7 +38,7 @@ export default function page() {
         })
       }
 
-      const result = await response.data
+      const result = await response.data.data
 
       toast({
         title : "User Detail -found",
@@ -38,8 +47,15 @@ export default function page() {
 
       console.log("response from the backend",result)
 
+      setUserData(result)
+
     }
-  })
+
+    UserprofileData()
+
+    setRefresh(false)
+
+  },[refresh])
 
   return (
     <div>
@@ -50,17 +66,17 @@ export default function page() {
 
           <div className='flex flex-col gap-4 w-[30%]'>
             <Label>Username: </Label>
-            <Input type='text' placeholder='username'/>
+            <Input type='text' placeholder='username' value={userdata?.username}/>
           </div>
 
           <div className='flex flex-col gap-4 w-[30%]'>
             <Label>fullname: </Label>
-            <Input type='text' placeholder='Fullname'/>
+            <Input type='text' placeholder='Fullname' value={userdata?.fullName}/>
           </div>
 
           <div className='flex flex-col gap-4 w-[30%]'>
             <Label>Email: </Label>
-            <Input type='email' placeholder='Email'/>
+            <Input type='email' placeholder='Email' value={userdata?.email}/>
           </div>
 
         </div>
