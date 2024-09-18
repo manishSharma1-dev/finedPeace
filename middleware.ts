@@ -11,20 +11,10 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl
 
     if(token && (
-        url.pathname.startsWith('/sign-in')  || url.pathname.startsWith('/sign-up')
+        url.pathname.startsWith('/sign-in')  || url.pathname.startsWith('/sign-up') || url.pathname.startsWith('/')
     )) {
         return NextResponse.redirect(new URL('/dashboard/thoughts', request.url))
     }
-
-    // if(token && url.pathname.startsWith('/sign-in')){
-    //     return NextResponse.redirect(new URL('/dashboard/thoughts', request.url))
-    // } else if ( token && url.pathname.startsWith('/sign-up') ){
-    //     return NextResponse.redirect(new URL('/sign-in', request.url))
-    // } else {
-    //     return NextResponse.redirect(new URL('/', request.url))
-    // }
-
-    // return NextResponse.redirect(new URL('/home', request.url))
 }
  
 // See "Matching Paths" below to learn more
@@ -33,5 +23,6 @@ export const config = {
     '/sign-in',
     '/sign-up',
     '/dashboard/thoughts',
+    '/'
   ]
 }
