@@ -20,7 +20,6 @@ export const Navbar: React.FC = () => {
                 </div>
 
                 <div className="flex gap-3">
-                    <button className="bg-[#EBEBEB] text-black pt-1 pb-1 pl-2 pr-2 rounded text-xs">Dark</button>
                     <button className="bg-[#222222] text-white pt-1 pb-1 pl-2 pr-2 rounded text-xs" onClick={handlenavigationtologinpage}>Login</button>
                 </div>
 
