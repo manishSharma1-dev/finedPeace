@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { MessageSquareQuote } from "lucide-react"
 
 export const Navbar: React.FC = () => {
 
@@ -15,7 +16,8 @@ export const Navbar: React.FC = () => {
             <div className="flex justify-between">
 
                 <div className="flex gap-3 items-center">
-                    <img src="#" alt="logo" />
+                    {/* <img src="#" alt="logo" /> */}
+                    <MessageSquareQuote size={14} color="black" />
                     <span className="font-bold text-sm">FindPeace</span>
                 </div>
 
