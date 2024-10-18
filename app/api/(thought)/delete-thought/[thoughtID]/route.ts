@@ -60,6 +60,7 @@ export async function DELETE(request:Request, { params } : { params : any }) {
         //--------------------
 
         if(thought?.username != session.user.username){
+            
             console.log("You cannot delete others thought")
             return NextResponse.json(
                 {

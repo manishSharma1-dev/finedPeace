@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { useToast } from '@/hooks/use-toast'
 
+
 interface userdata {
   username : string,
   fullName : string,
@@ -39,11 +40,6 @@ export default function page() {
       }
 
       const result = await response.data.data
-
-      toast({
-        title : "User Detail -found",
-        description : "user daetail fetched"
-      })
 
       console.log("response from the backend",result)
 

@@ -11,6 +11,7 @@ import axios from "axios"
 import { Button } from '@/components/ui/button'
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
+import { Loader2 } from "lucide-react"
 
 interface Response {
   status : any ;
@@ -22,6 +23,7 @@ interface Response {
 export default function page() {
   const [thoughtformBackend,setthoughtfromBackend] = useState([])
   const [refresh,setrefresh] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const { toast } = useToast()
 
@@ -34,11 +36,9 @@ export default function page() {
 
 
   const onSubmit = async(data:z.infer<typeof checkthoughtSchema>) => {
-    
-    setrefresh(true)
 
-    const response = await axios.post('/api/add-thought', data )
-
+    try {
+      const response = await axios.post('/api/add-thought', data )
     if(!response){
 
       toast({
@@ -51,43 +51,51 @@ export default function page() {
 
     }
 
-    console.log("thought added",response.data)
+    setrefresh(true)
 
       toast({
         title : "thought -added",
         description : "thought added Successfully"
       })
-
       form.reset()
-    
+
+    } catch (error  :any ) {
+        const errorMessage = error.response?.data?.message || "An error occurred";
+        toast({
+          title: "Thought",
+          description: errorMessage,
+          variant:'destructive'
+      });
+    }
+
   }
 
   useEffect(() =>{
 
     const fetchallthoudhtfrombackend = async() => {
+      setLoading(true);
       try {
-
         const response = await axios.get('/api/getallThought')
 
-        if(!response){
-          throw new Error("No thought are here")
-        }
+        if (!response.data || !response.data.data) {
+          throw new Error("No thoughts are here");
+      }
+        const result = await response.data.data
 
-        console.log("thought found")
+        setthoughtfromBackend(result)
+        setrefresh(false)            
 
-        const result = await response.data
-
-        setthoughtfromBackend(result.data)
-
-        console.log("thoughts as a resposne received",result.data)
-        
       } catch (error) {
         console.error("Loading Thought Failed",error)
-      }
+      } finally {
+        setLoading(false)
+        console.log("Loading state changes");
+     }
     }
 
-    fetchallthoudhtfrombackend()
-    setrefresh(false)
+     fetchallthoudhtfrombackend();
+  
+
   },[refresh])
 
 
@@ -97,8 +105,7 @@ export default function page() {
           console.log("Id of the thought to be deleted",thoughtID)
           
           const response :any  = await axios.delete(`/api/delete-thought/${thoughtID}`)
-    
-        setrefresh(true)
+         
     
           if(!response){
 
@@ -112,6 +119,8 @@ export default function page() {
           throw new Error("Error in receiving reponse")
     
         } 
+
+        setrefresh(true)
     
         toast({
           title : "thought",
@@ -119,6 +128,7 @@ export default function page() {
         })
     
         console.log("thought deleted")
+
       } catch (error : any ) {
         const errorMessage = error.response?.data?.message || "An error occurred";
         toast({
@@ -135,16 +145,17 @@ export default function page() {
      <div className='w-[65%] border-r border-white border-opacity-20 h-[46rem] pt-10 overflow-y-auto scrollbar-hide  '>
       <div className='flex flex-col gap-5 h-auto '>
 
-      {Array.isArray(thoughtformBackend) && thoughtformBackend.map((thoughtField:any,index:number) => (
-        <div className='flex flex-col gap-2 text-sm w-[30rem] bg-zinc-800 pt-2 pb-2 pl-4 pr-4 rounded' key={index}>
-          <div className='flex items-center justify-between pb-2'>
-            <span>{`by - ${thoughtField?.username}`}</span>
-            <XSquare size={14} className='hover:opacity-40' onClick={() => handledeltethoughtfromthebackend(thoughtField?._id)} />
+      {refresh || loading === false ? <>
+        { Array.isArray(thoughtformBackend) && thoughtformBackend.map((thoughtField:any,index:number) => (
+          <div className='flex flex-col gap-2 text-sm w-[30rem] bg-zinc-800 pt-2 pb-2 pl-4 pr-4 rounded' key={index}>
+            <div className='flex items-center justify-between pb-2'>
+              <span>{`by - ${thoughtField?.username}`}</span>
+              <XSquare size={14} className='hover:opacity-40' onClick={() => handledeltethoughtfromthebackend(thoughtField?._id)} />
+            </div>
+            <p>{thoughtField?.content}</p>
           </div>
-          <p>{thoughtField?.content}</p>
-        </div>
-      ))}
-
+        ))} 
+      </> : <div className='flex gap-2'><span>Loading...</span><Loader2 size={20} className='animate-spin' /></div> }
 
       </div>
      </div>
