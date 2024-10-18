@@ -8,7 +8,7 @@ export interface Thought extends Document{
 const thoughtSchema:Schema<Thought> = new Schema({
     username : {
        type : String,
-       required : true
+       required : true,
     },
     content : {
         type : String,

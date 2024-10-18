@@ -29,8 +29,6 @@ export async function GET(request:Request) {
         const CachedResult = myCache.get(cacheKey)
 
         if(CachedResult){
-            console.log("Data already Present in Cache")
-
             return Response.json(
                 {
                     success : true,

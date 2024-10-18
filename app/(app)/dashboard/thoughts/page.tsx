@@ -12,6 +12,12 @@ import { Button } from '@/components/ui/button'
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 
+interface Response {
+  status : any ;
+  message : any ;
+  data : any;
+}
+
 
 export default function page() {
   const [thoughtformBackend,setthoughtfromBackend] = useState([])
@@ -87,31 +93,40 @@ export default function page() {
 
   async function handledeltethoughtfromthebackend(thoughtID:string) {
       
-      console.log("Id of the thought to be deleted",thoughtID)
+      try {
+          console.log("Id of the thought to be deleted",thoughtID)
+          
+          const response :any  = await axios.delete(`/api/delete-thought/${thoughtID}`)
+    
+        setrefresh(true)
+    
+          if(!response){
 
-      const response = await axios.delete(`/api/delete-thought/${thoughtID}`)
-
-     setrefresh(true)
-
-      if(!response){
-
+    
+            toast({
+              title : "Deleting thought failed",
+              description : "Error in receiving reponse",
+              variant : 'destructive'
+            })
+    
+          throw new Error("Error in receiving reponse")
+    
+        } 
+    
         toast({
-          title : "Deleting thought failed",
-          description : "Deleting thought Failed",
-          variant : 'destructive'
+          title : "thought",
+          description : "DEleted thought successfully"
         })
-
-      throw new Error("Response Didn't Received")
-
-    } 
-
-
-    toast({
-      title : "thought Deleted",
-      description : "thought deleted"
-    })
-
-    console.log("thought deleted")
+    
+        console.log("thought deleted")
+      } catch (error : any ) {
+        const errorMessage = error.response?.data?.message || "An error occurred";
+        toast({
+          title: "Thought",
+          description: errorMessage,
+          variant:'destructive'
+      });
+      }
   }
 
   return (
