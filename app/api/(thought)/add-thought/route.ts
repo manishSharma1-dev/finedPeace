@@ -2,22 +2,31 @@ import { thoughtModel } from "@/model/thoughts.model";
 import { ConnectDb } from "@/connections/dbConnect";
 import { getServerSession } from "next-auth"
 import { authOptions } from "../../auth/[...nextauth]/options";
-import { UserModel } from "@/model/user.model";
+import { NextResponse } from "next/server";
 
-export async function POST(request:Request) {
-    await ConnectDb()
-
+export async function POST(req:Request) {
     try {
+        await ConnectDb()
 
-        console.log("Session will be checked here")
+        const { thought } = await req.json()
+
+        if(!thought){
+            return NextResponse.json(
+                {
+                    message : "Invalid Thought Property"
+                },
+                {
+                    status : 400
+                }
+            )
+        }
 
         const session = await getServerSession(authOptions)
 
         if(!session){
-            return Response.json(
+            return NextResponse.json(
                 {
-                    success  :false,
-                    message : "Login -pls"
+                    message : "You are Logged out"
                 },
                 {
                     status : 400
@@ -25,51 +34,23 @@ export async function POST(request:Request) {
             )
         }
 
-        console.log("Session founded")
+        console.log("test 4")
 
-        // const useremail = session.user?.email
-        const userId = session.user?._id
         const session_username = session.user?.username
 
-        // const user = await UserModel.findOne({
-        //     email : useremail
-        // })
-
-        const user = await UserModel.findById(userId)
-        
-
-        
-        if(!user){
-            return Response.json(
-                {
-                    success  :false,
-                    message : "Invalid -userId credential"
-                },
-                {
-                    status : 400
-                }
-            )
-        }
-        
-        console.log("User Founded")
-
-        const { thought } = await request.json()
-
-        console.log("thougth fromt the frontend",typeof(thought))
+        console.log("test 5")
 
         const thoughtCreated = await thoughtModel.create({
             username : session_username,
             content : thought
         })
 
-        console.log("thought created successfully")
+        console.log("test 6")
 
-        if(!await thoughtModel.findById(thoughtCreated._id)){
-
-            return Response.json(
+        if(!thoughtCreated){
+            return NextResponse.json(
                 {
-                    success  :false,
-                    message : "Thought -adding Failed"
+                    message : "Failed Adding Thought"
                 },
                 {
                     status : 500
@@ -77,14 +58,12 @@ export async function POST(request:Request) {
             )
         }
 
-        console.log("thought added Successfully")
 
-        await user.save({ validateBeforeSave  : true })
+        console.log("test 7")
 
-        return Response.json(
+        return NextResponse.json(
             {
-                success  :true,
-                message : "Thought -added Success",
+                message : "Added Thought",
                 data : thoughtCreated
             },
             {
@@ -93,12 +72,9 @@ export async function POST(request:Request) {
         )
         
     } catch (error) {
-        console.error("Adding Thought Failed")
-
-        return Response.json(
+        return NextResponse.json(
             {
-                success : false,
-                message : "Adding Thought Failed"
+                message : error ?? "Adding Thought Failed"
             },
             {
                 status : 500

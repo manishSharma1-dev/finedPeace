@@ -4,29 +4,25 @@ import { authOptions } from "../../../auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-export async function DELETE(request:Request, { params } : { params : any }) {
-    await ConnectDb()
-
+export async function DELETE(request:Request) {
     try {
+        await ConnectDb()
+
+        const url = new URL(request.url)
+        const thoughtID = url.pathname.split('/').pop()
 
         const session = await getServerSession(authOptions)
 
         if(!session){
             return NextResponse.json(
                 {
-                    success  :false,
-                    message : "Login -pls"
+                    message : "User is logged out"
                 },
                 {
                     status : 400
                 }
             )
         }
-
-
-        const { thoughtID } = params;
-
-        console.log("Thought id from the frontend",thoughtID)
 
         //--------------------
           const thought = await thoughtModel.findById(thoughtID)
@@ -43,28 +39,12 @@ export async function DELETE(request:Request, { params } : { params : any }) {
             )
           }
 
-        //   const ThoughtuserDetail = await UserModel.findOne({ username  : thought?.username })
-
-        //   if(!ThoughtuserDetail){
-        //     return Response.json(
-        //         {
-        //             success : false,
-        //             message : "Username in thought is invalid"
-        //         },
-        //         {
-        //             status : 400
-        //         }
-        //     )
-        //   }
-
-        //--------------------
+        
 
         if(thought?.username != session.user.username){
             
-            console.log("You cannot delete others thought")
             return NextResponse.json(
                 {
-                    success : false,
                     message : "You cannot delete others thought"
                 },
                 {
@@ -73,12 +53,11 @@ export async function DELETE(request:Request, { params } : { params : any }) {
             )
 
         } else {
-            const response = await thoughtModel.findByIdAndDelete(thoughtID)
+            const thoughtDeleted = await thoughtModel.findByIdAndDelete(thoughtID)
 
-            if(!response){
+            if(!thoughtDeleted){
             return NextResponse.json(
                     {
-                        success : false,
                         message : "Invalid Thought -id"
                     },
                     {
@@ -89,8 +68,8 @@ export async function DELETE(request:Request, { params } : { params : any }) {
 
             return NextResponse.json(
                     {
-                        success : true,
-                        message : "Thought -delete"
+                        message : "Thought -delete",
+                        data : thoughtDeleted
                     },
                     {
                         status : 200
@@ -100,13 +79,9 @@ export async function DELETE(request:Request, { params } : { params : any }) {
             }
 
     } catch (error) {
-
-        console.error("Thought -delete Failed",error)
-
         return NextResponse.json(
             {
-                success : false,
-                message : "thought -delete Failed"
+                message : error ?? "Thought deletion failed"
             },
             {
                 status : 500

@@ -10,9 +10,12 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
 
-export default function page() {
+export default function Page() {
 
+    const [checkPasswordUpdated,setCheckPasswordUpdated] = useState(false)
     const { toast } = useToast()
     const router = useRouter()
 
@@ -29,34 +32,45 @@ export default function page() {
     })
 
     const onSubmit = async(data : z.infer<typeof checkPasswordSchema>) => {
+      try {
 
-        const response = await axios.post('/api/change-password',data)
+        setCheckPasswordUpdated(true)
+        
+        const res = await fetch('/api/change-password',{
+          method : 'POST',
+          headers : {
+            'Content-Type' : 'application/json'
+          },
+          body : JSON.stringify({ oldpassword : data?.oldpassword , newpassword : data?.newpassword })
+        })
 
-        if(!response){
-          
+        const result = await res.json()
+
+        if(res.status != 200){
           toast({
-            title : 'password changed -failed',
-            description  : 'password changed failed'
+            title : result?.message,
+            className:'w-[300px] text-sm'
           })
-
-          throw new Error("password changed -failed")
         }
 
         toast({
-          title : 'password changeded -success',
-          description  : 'password changed success'
+          title : result?.message,
+          className:"w-[300px] text-sm"
         })
 
-        console.log("password changed Successfull", response.data)
-
+      } catch (error) {
+        console.log(error ?? 'Internal Server Error')
+      } finally {
+        setCheckPasswordUpdated(false)
+      }
     }
 
   return (
-    <div className='pt-28 '>
+    <div className='pt-10'>
       <div className='flex justify-center items-center'>
         <div>
 
-          <p className='font-bold text-3xl pb-10'>Change Password :</p>
+          <p className='text-base text-center pb-10'>Change Password 👀!</p>
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               
@@ -81,14 +95,18 @@ export default function page() {
                   <FormItem>
                     <FormLabel>New Password : </FormLabel>
                     <FormControl>
-                      <Input type='text' placeholder="New Password" {...field} />
+                      <Input type='password' placeholder="New Password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button type='submit' onClick={movetoSignIn} >Change</Button>
+              <div className='flex justify-center'>
+                <button type='submit' onClick={movetoSignIn} className='border pl-7 pr-7 py-2 text-xs rounded'>
+                  {checkPasswordUpdated === true ? <div className='animate-ping px-8'>◽◽◽</div> : 'Update'}
+                </button>
+              </div>
 
             </form>
           </FormProvider>

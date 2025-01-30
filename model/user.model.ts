@@ -1,11 +1,12 @@
 import mongoose,{ Schema,Document } from "mongoose";
+import { Thought } from "@/model/thoughts.model"
 
 export interface User extends Document {
-    
     username : string,
     fullName : string,
     email : string,
-    password : string
+    password : string,
+    thoughts? : Thought[]
 }
 
 const UserSchema:Schema<User>  = new Schema({
@@ -26,7 +27,11 @@ const UserSchema:Schema<User>  = new Schema({
     password : {
         type : String,
         required :true
-    }
+    },
+    thoughts : [{
+            type : Schema.Types.ObjectId,
+            ref : "Thought"
+    }]
 }, { timestamps  : true})
 
 // Checkng if the user model is already Credated if no then crete an User model

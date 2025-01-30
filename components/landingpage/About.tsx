@@ -11,7 +11,7 @@ export const About:React.FC = () => {
         if(!session){
             router.replace('/sign-in')
         } else {
-            router.replace('/dashboard/thought')
+            router.replace('/dashboard/thoughts')
         }
     }
 

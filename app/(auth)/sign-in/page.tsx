@@ -4,7 +4,6 @@ import * as z from 'zod'
 import { CheckSignInSchema } from '@/Schemas/CheckSignInSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
-// import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -12,9 +11,13 @@ import { Button } from '@/components/ui/button'
 import { signIn } from 'next-auth/react'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { Loader, Loader2 } from 'lucide-react'
 
 
-export default function page() {
+export default function Page() {
+
+  const [checkIfLogin,setCheckIfLogin] = useState(false)
 
   const {toast} = useToast()
   const router = useRouter()
@@ -29,6 +32,8 @@ export default function page() {
 
   const onSubmit = async(data:z.infer<typeof CheckSignInSchema>) => {
     try {
+
+      setCheckIfLogin(true);
       
       const response = await signIn('credentials', {
         redirect: false,
@@ -37,7 +42,6 @@ export default function page() {
       })
       
       if (!response || response.error) {
-        // throw new Error(response?.error || "Invalid Response");
         toast({
           title : 'login failed',
           description : "Incorrect Username or Password",
@@ -51,14 +55,10 @@ export default function page() {
           variant : 'default'
         })
 
-        console.log("user Logged in..")
-
-        console.log("Response", response)
+        setCheckIfLogin(false)
 
         router.replace('/dashboard/thoughts')
-
       }
-
 
     } catch (error) {
       console.error("Logging Failed",error)
@@ -104,7 +104,9 @@ export default function page() {
                   )}
                 />
 
-                <Button type='submit'>Sign-in</Button>
+                <Button type='submit'>
+                  {checkIfLogin === true ? <Loader size={13} className='pl-7 pr-7' /> : "Sign-in"}
+                </Button>
  
             </form>
           </FormProvider>

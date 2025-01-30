@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import headerImage from "@/public/findpeace_photo.png"
+import headerImage from "@/public/finedpeaceProjectheaderimg.png"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 
@@ -34,7 +34,7 @@ export const Header: React.FC = () =>{
 
                 <div className="h-[33rem]">
                     <div>
-                        <Image src={headerImage} alt="Header" className="object-fill h-[27rem]"/>
+                        <Image src={headerImage} alt="Header" className="object-cover min-h-[25rem] max-h-[27rem]" />
                     </div>
                 </div>
 
@@ -42,3 +42,5 @@ export const Header: React.FC = () =>{
         </main>
     )
 }
+
+// className="object-fill h-[27rem]"

@@ -3,25 +3,19 @@ import { UserModel } from "@/model/user.model";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import bcrypt from 'bcryptjs'
+import { NextResponse } from "next/server";
 
 export async function POST(request:Request) {
-    await ConnectDb()
-
     try {
+        
+        await ConnectDb()
 
         const { oldpassword,newpassword } = await request.json()
 
-        //user provide - old password
-        //old password will be matched - if no then return null
-        // if yes - update the old password with thw new onw 
-
-        const session = await getServerSession(authOptions)
-
-        if(!session){
-            return Response.json(
+        if(!oldpassword && !newpassword){
+            return NextResponse.json(
                 {
-                    success : false,
-                    message : "login -pls"
+                    message : "Invalid Properties.."
                 },
                 {
                     status : 400
@@ -29,39 +23,63 @@ export async function POST(request:Request) {
             )
         }
 
-        const userId = session?.user._id
+        const session = await getServerSession(authOptions)
 
-        const user = await UserModel.findById(userId)
+        if(!session){
+            return NextResponse.json(
+                {
+                    message : "User is logged out"
+                },
+                {
+                    status : 400
+                }
+            )
+        }
+
+        const user = await UserModel.findById(session.user._id)
 
         if(!user){
-            throw new Error("User not -Found")
+            return NextResponse.json(
+                {
+                    message : "Failed user id is invalid"
+                },
+                {
+                    status : 400
+                }
+            )
         }
 
-        if(oldpassword !== user.password){
-            throw new Error("Password didn't -match")
+        if(oldpassword != user.password){
+            return NextResponse.json(
+                {
+                    message : "Password didn't -match"
+                },
+                {
+                    status : 400
+                }
+            )
         }
 
-        user.password = newpassword
+        const hashedPassword = await bcrypt.hash(newpassword,10)
+
+        user.password = hashedPassword
 
         await user.save({ validateBeforeSave : true })        
 
-        return Response.json(
+        return NextResponse.json(
             {
-                success : true,
                 message : "password -updated"
             },
             {
-                status : 201
+                status : 200
             }
         )
         
     } catch (error) {
-        console.error("Password Changing failed",error)
 
         return Response.json(
             {
-                success : false,
-                message : "Password -changing Failed"
+                message : error ?? "Password -changing Failed"
             },
             {
                 status : 500

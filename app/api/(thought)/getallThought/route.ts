@@ -1,8 +1,7 @@
 import { thoughtModel } from "@/model/thoughts.model";
 import { ConnectDb } from "@/connections/dbConnect";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/options";
 import NodeCache from "node-cache"
+import { NextResponse } from "next/server";
 
 const myCache = new NodeCache();
 
@@ -11,40 +10,24 @@ export async function GET(request:Request) {
 
     try {
 
-        const session = await getServerSession(authOptions)
-
-        if(!session){
-            return Response.json(
-                {
-                    success  :false,
-                    message : "Login -pls"
-                },
-                {
-                    status : 400
-                }
-            )
-        }
-
         const cacheKey = JSON.stringify("Alldata")
         const CachedResult = myCache.get(cacheKey)
 
         if(CachedResult){
-            return Response.json(
+            return NextResponse.json(
                 {
-                    success : true,
                     message : "data already in cache",
                     data : CachedResult
                 }
-            )
+        )
 
         } else {
 
-            const response = await thoughtModel.find({ }).sort({ createdAt : -1 })
+            const thoughts = await thoughtModel.find({ }).sort({ createdAt : -1 })
 
-            if(!response){
-                return Response.json(
+            if(!thoughts){
+                return NextResponse.json(
                     {
-                        success: false,
                         message: "Thoughts fetching Failed"
                     },
                     {
@@ -53,25 +36,12 @@ export async function GET(request:Request) {
                 )
             }
 
-            if(response.length < 0){
-                return Response.json(
-                    {
-                        success  : true,
-                        message: "No thoughts avialable"
-                    },
-                    {
-                        status : 200
-                    }
-                )
-            }
+            myCache.set(cacheKey,thoughts,3600)
 
-            myCache.set(cacheKey,response,3600)
-
-            return Response.json(
+            return NextResponse.json(
                 {
-                    success  : true,
-                    message: "No thoughts avialable",
-                    data  : response
+                    message: "Fetched All Thought",
+                    data  : thoughts
                 },
                 {
                     status : 200
@@ -80,8 +50,7 @@ export async function GET(request:Request) {
         }   
         
     } catch (error) {
-        console.error("Fetching all thougts failed",error)
-        return Response.json(
+        return NextResponse.json(
             {
                 success : false,
                 messsage : "Fatching all thoughts failed"

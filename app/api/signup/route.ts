@@ -2,32 +2,20 @@ import { UserModel } from "@/model/user.model";
 import { ConnectDb } from "@/connections/dbConnect";
 import bcrypt from "bcryptjs"
 import { NextResponse } from "next/server";
+import { User } from "@/model/user.model"
 
 export async function POST(request:Request) {
-    // User SignUp 
-    // 1 -> first check if db is already Connected or not and give reaponse aq to it,if not 
-    // 2 -> take the credential from the user
-    // 3 check for the credential
-    // 4 -> Password hash
-    // 5 -> Creta User ANd Send Reposnse aq to it 
-    // 6 -> check if user is already Registered
 
     await ConnectDb()
 
     try {
         
-        const { username, fullName, email, password} = await request.json()
-        // console.log("getting data fiels",username,fullName,email,password)
+        const { username, fullName, email, password} : User = await request.json()
 
         if(!username && !fullName && !email && !password){
-            return Response.json(
-                {
-                    success  : false,
-                    message : "Invalid Properties by user"
-                },
-                {
-                    status : 400
-                }
+            return NextResponse.json(
+                {message : "Invalid Properties by user"},
+                {status : 404}
             )
         }
 
@@ -36,10 +24,9 @@ export async function POST(request:Request) {
         })
 
         if(existedUser){
-            return Response.json(
+            return NextResponse.json(
                 {
-                    success : false,
-                    message : "User Already Exits"
+                    message : "Email Already Registered"
                 },
                 {
                     status : 200
@@ -56,12 +43,9 @@ export async function POST(request:Request) {
             password : hashedPassword
         })
 
-        const CheckifUserCreated = await UserModel.findById(user._id)
-
-        if(!CheckifUserCreated){
-            return Response.json(
+        if(!user){
+            return NextResponse.json(
                 {
-                    success : false,
                     message : "User Didn't Created"
                 },
                 {
@@ -70,11 +54,8 @@ export async function POST(request:Request) {
             )
         }
 
-        await user.save({ validateBeforeSave  : true })
-
         return NextResponse.json(
             {
-                 success : true,
                  message : "User Registered"
             },
             {
@@ -84,17 +65,13 @@ export async function POST(request:Request) {
 
 
     } catch (error) {
-        console.error("User Registration Failed")
-
-        return Response.json(
+        return NextResponse.json(
             {
-                success :false,
-                message : "User Registration Failed"
+                message : error ?? "User Registration Failed"
             },
             {
                 status : 500
             }
         )
     }
-
 }

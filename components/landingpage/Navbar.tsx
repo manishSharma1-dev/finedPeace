@@ -2,13 +2,20 @@
 
 import { useRouter } from "next/navigation"
 import { MessageSquareQuote } from "lucide-react"
+import { useSession } from "next-auth/react"
+
 
 export const Navbar: React.FC = () => {
 
+    const { data: session } = useSession()
     const router = useRouter()
 
     function handlenavigationtologinpage(){
-        router.replace('/sign-in')
+        if(!session){
+            router.replace('/sign-in')
+        } else {
+            router.replace('/dashboard/thoughts')
+        }
     }
 
     return (
@@ -16,9 +23,8 @@ export const Navbar: React.FC = () => {
             <div className="flex justify-between">
 
                 <div className="flex gap-3 items-center">
-                    {/* <img src="#" alt="logo" /> */}
                     <MessageSquareQuote size={14} color="black" />
-                    <span className="font-bold text-sm">FindPeace</span>
+                    <span className="text-sm">Dumpthought</span>
                 </div>
 
                 <div className="flex gap-3">

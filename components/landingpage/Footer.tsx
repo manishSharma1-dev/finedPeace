@@ -1,11 +1,19 @@
 "use client"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { TwitterLogoIcon } from "@radix-ui/react-icons"
+import { GitHubLogoIcon  } from "@radix-ui/react-icons"
 
 export const Footer:React.FC = () => {
     const router = useRouter()
+    const { data: session } = useSession()
 
     function handlemovetosignuppage(){
-        router.replace('/sign-up')
+        if(!session){
+            router.replace('/sign-up')
+        } else {
+            router.replace('/dashboard/thoughts')
+        }
     }
 
     return (
@@ -19,8 +27,8 @@ export const Footer:React.FC = () => {
                 <p>made by -manish </p>
                 <span> manishvsharma1@gmail.com</span>
                 <div className="flex gap-5">
-                    <p className="cursor-pointer">G</p>
-                    <p className="cursor-pointer">T</p>
+                    <GitHubLogoIcon className="cursor-pointer" onClick={() => window.open("https://github.com/manishSharma1-dev/finedPeace","_blank")} />
+                    <TwitterLogoIcon className="cursor-pointer" onClick={() =>window.open("https://x.com/Manish1_sh","_blank")} />
                 </div>
             </div>
         </div>

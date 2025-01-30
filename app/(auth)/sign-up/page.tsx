@@ -10,8 +10,12 @@ import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessa
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { Loader2Icon } from 'lucide-react'
+import { useState } from 'react'
 
-export default function page() {
+export default function Page() {
+
+  const [checkIfSign_up,setCheckIfSign_up] = useState(false)
 
   const router = useRouter()
 
@@ -27,6 +31,8 @@ export default function page() {
 
     async function onSubmit(data:z.infer<typeof CheckSignupSchema>){
         try {
+
+          setCheckIfSign_up(true)
             const response = await axios.post('/api/signup',{
                 username : data?.username,
                 fullName : data?.fullName,
@@ -38,19 +44,19 @@ export default function page() {
                 throw new Error("Registration Repsonse null")
             }
 
-            console.log("Registration Successfull")
             console.log("Server Reponse",response.data)
+
+            setCheckIfSign_up(false)
 
             router.replace('/sign-in') //move to sign-in page
 
         } catch (error) {
             console.error("User Registration failed",error)
         }
-
     }
 
   return (
-    <div className='pt-28 '>
+    <div className='pt-28'>
       <div className='flex justify-center items-center'>
         <div>
 
@@ -58,8 +64,6 @@ export default function page() {
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               
-              {/* for username */}
-
               <FormField
                 control={form.control}
                 name="username"
@@ -73,8 +77,6 @@ export default function page() {
                   </FormItem>
                 )}
               />
-
-              {/* for fullname */}
 
               <FormField
                 control={form.control}
@@ -90,8 +92,6 @@ export default function page() {
                 )}
               />
 
-              {/* for emial  */}
-
               <FormField
                 control={form.control}
                 name="email"
@@ -105,8 +105,6 @@ export default function page() {
                   </FormItem>
                 )}
               />
-
-              {/* for password  */}
 
               <FormField
                 control={form.control}
@@ -122,7 +120,9 @@ export default function page() {
                 )}
               />
 
-              <Button type='submit'>Sign-up</Button>
+              <Button type='submit'>
+                {checkIfSign_up === true ? <Loader2Icon size={13} className='pl-7 pr-7' /> : "sign-up"}
+              </Button>
               
             </form>
           </FormProvider>

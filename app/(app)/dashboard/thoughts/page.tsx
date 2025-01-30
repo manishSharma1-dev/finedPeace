@@ -1,29 +1,27 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { Asterisk,MessageSquareQuote,XSquare } from "lucide-react"
+import { Asterisk,LoaderIcon,MessageSquareQuote,XSquare } from "lucide-react"
 import { useForm,FormProvider  } from 'react-hook-form'
 import { checkthoughtSchema } from '@/Schemas/CheckthoughtSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from "zod"
 import { useToast } from '@/hooks/use-toast'
-import axios from "axios"
-import { Button } from '@/components/ui/button'
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
-import { Loader2 } from "lucide-react"
 
-interface Response {
-  status : any ;
-  message : any ;
-  data : any;
+type thoughtType = {
+  _id : string;
+  content : string;
+  username : string;
 }
 
+export default function Page() {
+  const [thoughtFetchedformBackend,setFetchedthoughtfromBackend] = useState<thoughtType[]>([])
+  const [newThoughtCreated,setNewThoughtCreated] = useState(false)
+  const [checkThoughtDeleted,setCheckThoughtDeleted] = useState(false)
 
-export default function page() {
-  const [thoughtformBackend,setthoughtfromBackend] = useState([])
-  const [refresh,setrefresh] = useState(false)
-  const [loading, setLoading] = useState(false);
+  const [checkifthoughtAdded,setCheckIfThoughtAdded] = useState(false)
 
   const { toast } = useToast()
 
@@ -35,147 +33,168 @@ export default function page() {
   })
 
 
+  // function for creating new thoughts
   const onSubmit = async(data:z.infer<typeof checkthoughtSchema>) => {
-
     try {
-      const response = await axios.post('/api/add-thought', data )
-    if(!response){
 
-      toast({
-        title : "Adding thought failed",
-        description : "Adding thought Failed",
-        variant : 'destructive'
+      setCheckIfThoughtAdded(true)
+
+      const res = await fetch("/api/add-thought",{
+        method : 'POST',
+        headers : {
+          'Content-Type' : 'application/json'
+        },
+        body : JSON.stringify({ thought : data?.thought })
       })
 
-      throw new Error("Response Didn't Received")
+      const result = await res.json()
 
-    }
+      if(res.status != 200){
+        console.log(res)
+        toast({
+          title : result?.message,
+          className: 'w-[300px] text-sm'
+        })
+      }
 
-    setrefresh(true)
+      console.log("test 3")
+
+      setCheckIfThoughtAdded(false)
+
+      setNewThoughtCreated(!newThoughtCreated)
 
       toast({
-        title : "thought -added",
-        description : "thought added Successfully"
+        title : result?.message,
+        className:'w-[300px] text-sm'
       })
+
+      console.log(result?.data)
+
       form.reset()
 
-    } catch (error  :any ) {
-        const errorMessage = error.response?.data?.message || "An error occurred";
-        toast({
-          title: "Thought",
-          description: errorMessage,
-          variant:'destructive'
-      });
+    } catch (error) {
+      setCheckIfThoughtAdded(false)
+      console.log(error ?? "Internal server Error")
     }
-
   }
 
+  // function for fetching All thought
   useEffect(() =>{
-
-    const fetchallthoudhtfrombackend = async() => {
-      setLoading(true);
+    const fetchallthoughtfrombackend = async() => {
       try {
-        const response = await axios.get('/api/getallThought')
+        const res = await fetch("/api/getallThought")
 
-        if (!response.data || !response.data.data) {
-          throw new Error("No thoughts are here");
-      }
-        const result = await response.data.data
+        if(res.status != 200){
+          const data = await res.json()
+          console.error(data?.message)
+        }
 
-        setthoughtfromBackend(result)
-        setrefresh(false)            
+        const data = await res.json()
+
+        console.log(data)
+
+        setFetchedthoughtfromBackend(data?.data)
 
       } catch (error) {
         console.error("Loading Thought Failed",error)
-      } finally {
-        setLoading(false)
-        console.log("Loading state changes");
-     }
+      } 
     }
 
-     fetchallthoudhtfrombackend();
-  
-
-  },[refresh])
+     fetchallthoughtfrombackend();
+  },[newThoughtCreated,checkThoughtDeleted])
 
 
+  // func for deleting thought
   async function handledeltethoughtfromthebackend(thoughtID:string) {
-      
       try {
-          console.log("Id of the thought to be deleted",thoughtID)
-          
-          const response :any  = await axios.delete(`/api/delete-thought/${thoughtID}`)
-         
-    
-          if(!response){
 
-    
-            toast({
-              title : "Deleting thought failed",
-              description : "Error in receiving reponse",
-              variant : 'destructive'
-            })
-    
-          throw new Error("Error in receiving reponse")
-    
+        toast({
+          title : "thought deleting",
+          className:'w-[300px] text-sm'
+        })
+
+        const res = await fetch(`/api/delete-thought/${thoughtID}`,{
+          method : 'DELETE'
+        })
+
+        const data = await res.json()
+         
+        if(res.status != 200){
+          toast({
+            title : data?.message,
+            variant : 'destructive'
+          })
         } 
 
-        setrefresh(true)
-    
         toast({
-          title : "thought",
-          description : "DEleted thought successfully"
+          title : data?.message,
+          className:'w-[300px] text-sm'
         })
-    
-        console.log("thought deleted")
 
-      } catch (error : any ) {
-        const errorMessage = error.response?.data?.message || "An error occurred";
-        toast({
-          title: "Thought",
-          description: errorMessage,
-          variant:'destructive'
-      });
+        setCheckThoughtDeleted(!checkThoughtDeleted)
+
+      } catch (error) {
+        console.error(error ?? "Internal Server Error")
       }
   }
 
   return (
-   <div className='flex gap-[2%]'>
+   <div className='grid grid-cols-6'>
 
-     <div className='w-[65%] border-r border-white border-opacity-20 h-[46rem] pt-10 overflow-y-auto scrollbar-hide  '>
-      <div className='flex flex-col gap-5 h-auto '>
-
-      {refresh || loading === false ? <>
-        { Array.isArray(thoughtformBackend) && thoughtformBackend.map((thoughtField:any,index:number) => (
-          <div className='flex flex-col gap-2 text-sm w-[30rem] bg-zinc-800 pt-2 pb-2 pl-4 pr-4 rounded' key={index}>
-            <div className='flex items-center justify-between pb-2'>
-              <span>{`by - ${thoughtField?.username}`}</span>
-              <XSquare size={14} className='hover:opacity-40' onClick={() => handledeltethoughtfromthebackend(thoughtField?._id)} />
+       <div className='col-start-1 col-end-5 min-h-screen border-r max-h-screen h-auto overflow-y-auto scrollbar-hide'>
+        {
+          thoughtFetchedformBackend.length > 0 ? (
+            <div className='flex flex-col items-center gap-2 p-2 '>
+              {
+                thoughtFetchedformBackend.map((thoughtField:thoughtType,idx:number) => (
+                  <div className='flex flex-col gap-2 text-sm w-[27rem] bg-neutral-800 pt-2 pb-2 pl-4 pr-4 rounded cursor-pointer' key={idx}>
+                    <div className='flex items-center justify-between pb-2'>
+                      <span>{`by - ${thoughtField?.username}`}</span>
+                      <XSquare size={14} className='hover:opacity-40' onClick={() => handledeltethoughtfromthebackend(thoughtField?._id)} />
+                    </div>
+                    <p className='text-xs opacity-65 w-[80%]'>{thoughtField?.content}</p>
+                  </div>
+                ))
+              } 
             </div>
-            <p>{thoughtField?.content}</p>
+          ) : ( 
+            <div className='flex justify-center items-center min-h-screen'>
+              <p className='text-sm opacity-70 hover:opacity-100 cursor-pointer animate-pulse'>Wait, fetching thoughts🎈 !</p>
+            </div>
+          )
+        }
+       </div>
+
+       <div className='col-start-5 col-end-7 min-h-screen pl-7 pr-5'>
+          <div className='flex items-center gap-1 pt-3'>
+            <Asterisk size={13} color='red' />
+            <span className='text-xs'>Write here anything✍ !</span>
           </div>
-        ))} 
-      </> : <div className='flex gap-2'><span>Loading...</span><Loader2 size={20} className='animate-spin' /></div> }
 
-      </div>
-     </div>
+          <div className='flex flex-col gap-1 pt-7 pl-5 text-xs flex-wrap'>
+            <p className='pl-3'>
+              <span>{'->'} </span>
+              <span className='opacity-40 italic animate-pulse'>anything that came to your mind...</span>
+            </p>
+            <p className='pl-3 '>
+              <span >{'->'} </span>
+              <span className='opacity-40'>drop your thought here...</span>
+            </p>
+            <p className='pl-3 '>
+              <span >{'->'} </span> 
+              <span className='opacity-40 italic  animate-pulse'>things you can't discuss with anyone...</span>
+            </p>
+            <p className=' pl-3 '>
+              <span >{'->'} </span> 
+              <span className='opacity-40'>Any Idea that came to your mind...</span>
+            </p>
+            <p className='pl-3 '>
+              <span >{'->'} </span> 
+              <span className='opacity-40 animate-pulse'>things you want to say but fear to say it...</span>
+            </p>
+          </div>
 
-     <div className='w-[33%] pt-10 pl-5'>
-
-        <div className='flex items-center gap-1'>
-          <Asterisk size={13} color='red' />
-          <span className='text-sm'>Write here anything :--</span>
-        </div>
-
-        <div className='flex flex-col gap-1 pt-3 pl-5 text-xs flex-wrap'>
-          <p className='italic opacity-40 pl-3 '>- anything that came to your mind...</p>
-          <p className='italic opacity-40 pl-3 '>- words from your heart...</p>
-          <p className='italic opacity-40 pl-3 '>- things you can't discuss with anyone...</p>
-          <p className='italic opacity-40 pl-3 '>- your guilts(if your want..)</p>
-          <p className='italic opacity-40 pl-3 '>- things you want to say but fear to say it...</p>
-        </div>
-
-        <div className='pt-16'>
+          <div className='pt-16'>
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
               <FormField
@@ -183,31 +202,30 @@ export default function page() {
                 name="thought"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='flex items-center gap-2 pb-2'><span>Your thought </span><MessageSquareQuote size={13} /></FormLabel>
+                    <FormLabel className='flex items-center gap-2 pb-2'><span className='opacity-80 hover:opacity-100 cursor-pointer'>Your thought </span><MessageSquareQuote size={13} />{'!'}</FormLabel>
                     <FormControl className='w-72'>
                       <Textarea
-                        placeholder="Tell us a little bit about yourself"
-                        className="resize-none overflow-y-auto scrollbar-hide" 
+                        placeholder="What's in your mind ✍"
+                        className="resize-none text-xs overflow-y-auto scrollbar-hide" 
                         {...field}
-                        rows={8}
+                        rows={11}
                       />
                     </FormControl>
                     <FormDescription>
-                      Let your<span className='opacity-65'> @words</span> be out.
+                      dump your thoughts here..
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className='text-xs'>Submit</Button>
+              <button type="submit" className='text-xs px-12 border py-2 rounded'>
+                {checkifthoughtAdded === true ? <div className='animate-bounce text-sm'><p>🐱‍🏍</p></div> : 'Submit'}
+              </button>
             </form>
           </FormProvider>
         </div>
 
-     </div>
-
+       </div>
    </div>
   )
 }
-
-

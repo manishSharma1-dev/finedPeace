@@ -1,4 +1,3 @@
-// import { connectDB } from "@/lib/databaseConnection";
 import { ConnectDb } from "@/connections/dbConnect";
 import { NextAuthOptions } from "next-auth";
 import { UserModel } from "@/model/user.model";
@@ -46,8 +45,8 @@ export const authOptions:NextAuthOptions = {
                     }
 
 
-                } catch (error : any) {
-                    throw new Error("Failed to find the user",error)
+                } catch (error) {
+                    throw new Error("Failed to find the user")
                 }
 
             }

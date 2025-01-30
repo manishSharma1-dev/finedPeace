@@ -4,9 +4,20 @@ import React, { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
 import { useToast } from '@/hooks/use-toast'
+import { EditIcon } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { Loader2 } from 'lucide-react'
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 interface userdata {
   username : string,
@@ -14,72 +25,204 @@ interface userdata {
   email : string
 }
 
-export default function page() {
+export default function Page() {
   const [userdata,setUserData] = useState<userdata | null>(null)
-  const [refresh,setRefresh] = useState(false)
+  const [newUsernameValue,setNewUsernamaValue] = useState("");
+  const [newEmailValue,setNewEmailValue] = useState("")
+
+  const [checkUsernameUpdated,setCheckUsernameUpdated] = useState(false)
+  const [checkEmailUpdated,setCheckEmailUpdated] = useState(false)
+  const [checkButtonStateLoading,setCheckButtonStateLoading] = useState(false)
 
   const { toast } = useToast()
 
   const router = useRouter()
 
   function handleNavigationtoChangepassword(){
-    router.replace('/dashboard/change-password')
+    router.push('/dashboard/change-password')
   }
 
   useEffect(() => {
 
-    setRefresh(true)
-
     async function UserprofileData () {
-      const response = await axios.get('/api/userprofile')
+      const res = await fetch('/api/userprofile')
 
-      if(!response){
+      if(res.status != 200){
+        const data = await res.json()
         toast({
-          title : 'User Profile -fetched failed'
+          title : data?.message
         })
       }
 
-      const result = await response.data.data
+      const data = await res.json()
 
-      console.log("response from the backend",result)
-
-      setUserData(result)
-
+      setUserData(data?.data)
     }
 
     UserprofileData()
+  },[checkEmailUpdated,checkUsernameUpdated])
 
-    setRefresh(false)
+  async function updateEmail() {
+    try {
 
-  },[refresh])
+      setCheckButtonStateLoading(true)
+
+      console.log(newEmailValue)
+
+      const res = await fetch('/api/updateEmail',{
+        method : 'PUT',
+        headers : {
+          'Content-Type' : 'application/json'
+        },
+        body : JSON.stringify({ newEmail : newEmailValue })
+      })
+
+      const data = await res.json()
+
+      if(res.status != 200){
+        toast({
+          title : data?.message,
+          className :'w-[300px] text-sm'
+        })
+      }
+
+      toast({
+        title : data?.message,
+        className : 'w-[300px] text-sm'
+      })
+
+      setCheckEmailUpdated(!checkEmailUpdated)
+      
+    } catch (error) {
+      console.error(error ?? 'Internal server error')
+    } finally {
+      setCheckButtonStateLoading(false)
+    }
+  }
+
+  async function updateUsername() {
+    try {
+      setCheckButtonStateLoading(true)
+      const res = await fetch('/api/updateUsername',{
+        method : 'PUT',
+        headers : { 
+          'Content-Type' : 'application/json'
+        },
+        body : JSON.stringify({ newUsername : newUsernameValue })
+      })
+      const data = await res.json()
+
+      if(res.status != 200){
+        toast({
+          title : data?.message,
+          className :'w-[300px] text-sm'
+        })
+      }
+
+      toast({
+        title : data?.message,
+        className : 'w-[300px] text-sm'
+      })
+
+      setCheckUsernameUpdated(!checkUsernameUpdated)
+      
+    } catch (error) {
+      console.error(error ?? 'Internal server error')
+    } finally {
+      setCheckButtonStateLoading(false)
+    }
+  }
 
   return (
-    <div>
-      <div className='pt-10'>
-       <p>User Info :</p>
-
-        <div className='flex flex-col gap-5 pt-10'>
-
-          <div className='flex flex-col gap-4 w-[30%]'>
-            <Label>Username: </Label>
+      <div>
+        <p className='text-center pt-8'>User Information 📒!</p>
+        <div className='flex flex-col items-center gap-8 pt-10 '>
+          <div className='flex flex-col gap-3 w-[30%]'>
+            <Label className='text-xs opacity-75 flex justify-between'>
+              <span>Username:</span>
+              <span>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <EditIcon size={13} className='cursor-pointer hover:opacity-70' />
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle />
+                    <DialogDescription>
+                      Enter New Username...
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="Username" className="text-right">
+                        Username
+                      </Label>
+                      <Input
+                        id="username"
+                        className="col-span-3"
+                        value={newUsernameValue}
+                        onChange={(e) => setNewUsernamaValue(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <button type="submit" onClick={updateUsername} className='bg-black text-white pl-7 pr-7 text-sm py-2 rounded'>
+                      {checkButtonStateLoading === true ? <div className='animate-ping px-8'>◽◽◽</div> : 'Update Username'}
+                    </button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              </span>
+            </Label>
             <Input type='text' placeholder='username' value={userdata?.username}/>
           </div>
 
-          <div className='flex flex-col gap-4 w-[30%]'>
-            <Label>fullname: </Label>
+          <div className='flex flex-col gap-3 w-[30%]'>
+            <Label className='text-xs opacity-75'>fullname: </Label>
             <Input type='text' placeholder='Fullname' value={userdata?.fullName}/>
           </div>
 
-          <div className='flex flex-col gap-4 w-[30%]'>
-            <Label>Email: </Label>
+          <div className='flex flex-col gap-3 w-[30%]'>
+            <Label className='text-xs opacity-75 flex justify-between'>
+              <span>Email:</span>
+              <span>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <EditIcon size={13} className='cursor-pointer hover:opacity-70' />
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                  <DialogTitle />
+                    <DialogDescription>
+                      Enter New Email...
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="email" className="text-right">
+                        Email
+                      </Label>
+                      <Input
+                        id="email"
+                        className="col-span-3"
+                        value={newEmailValue}
+                        onChange={(e) => setNewEmailValue(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <button type="submit" onClick={updateEmail} className='bg-black text-white border pl-7 pr-7 text-sm py-2 rounded'>
+                    {checkButtonStateLoading === true ? <div className='animate-ping px-8'>◽◽◽</div> : 'Update Email'}
+                    </button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              </span>
+            </Label>
             <Input type='email' placeholder='Email' value={userdata?.email}/>
           </div>
-
+          <p className='text-sm  hover:opacity-50 cursor-pointer underline underline-offset-8 decoration-red-200' onClick={handleNavigationtoChangepassword}>Change Password 👀?</p>
         </div>
-
-        <p className='pt-10 text-sm  hover:opacity-50 cursor-pointer underline underline-offset-8 decoration-red-200' onClick={handleNavigationtoChangepassword}>Change Password ?</p>
-
       </div>
-    </div>
   )
 }
