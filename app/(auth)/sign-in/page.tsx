@@ -12,7 +12,7 @@ import { signIn } from 'next-auth/react'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Loader, Loader2 } from 'lucide-react'
+import { Loader } from 'lucide-react'
 
 
 export default function Page() {
@@ -101,11 +101,19 @@ export default function Page() {
                       </FormControl>
                       <FormMessage />
                     </FormItem>
-                  )}
+                  )}  
                 />
 
-                <Button type='submit'>
-                  {checkIfLogin === true ? <Loader size={13} className='pl-7 pr-7' /> : "Sign-in"}
+                {/* <Button type='submit'> 
+                  {checkIfLogin === false ? <LoaderCircleIcon stroke='white' strokeWidth={2.5}  size={13} className='text-white pl-7 pr-7 animate-spin' /> : "Sign-in"}
+                </Button> */}
+
+                <Button type="submit" className="px-10 py-2 flex items-center justify-center">
+                  {checkIfLogin === true ? (
+                    <Loader size={18} stroke="white" strokeWidth={2.5} className="opacity-80 animate-spin" />
+                  ) : (
+                    "Sign-in"
+                  )}
                 </Button>
  
             </form>

@@ -6,11 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckSignupSchema } from "@/Schemas/CheckSignupSchema"
 import axios from "axios"
 import { Button } from '@/components/ui/button'
-import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form'
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Loader2Icon } from 'lucide-react'
+import { Loader } from 'lucide-react'
 import { useState } from 'react'
 
 export default function Page() {
@@ -120,8 +120,12 @@ export default function Page() {
                 )}
               />
 
-              <Button type='submit'>
-                {checkIfSign_up === true ? <Loader2Icon size={13} className='pl-7 pr-7' /> : "sign-up"}
+              <Button type="submit" className="px-10 py-2 flex items-center justify-center">
+                  {checkIfSign_up === true ? (
+                    <Loader size={18} stroke="white" strokeWidth={2.5} className="opacity-80 animate-spin" />
+                  ) : (
+                    "Sign-in"
+                  )}
               </Button>
               
             </form>
