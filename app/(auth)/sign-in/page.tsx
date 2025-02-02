@@ -62,6 +62,8 @@ export default function Page() {
 
     } catch (error) {
       console.error("Logging Failed",error)
+    } finally{
+      setCheckIfLogin(false)
     }
   }
 
@@ -103,10 +105,6 @@ export default function Page() {
                     </FormItem>
                   )}  
                 />
-
-                {/* <Button type='submit'> 
-                  {checkIfLogin === false ? <LoaderCircleIcon stroke='white' strokeWidth={2.5}  size={13} className='text-white pl-7 pr-7 animate-spin' /> : "Sign-in"}
-                </Button> */}
 
                 <Button type="submit" className="px-10 py-2 flex items-center justify-center">
                   {checkIfLogin === true ? (

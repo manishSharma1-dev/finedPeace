@@ -47,17 +47,18 @@ export default function Page() {
         body : JSON.stringify({ thought : data?.thought })
       })
 
-      const result = await res.json()
+      
 
       if(res.status != 200){
-        console.log(res)
-        toast({
-          title : result?.message,
-          className: 'w-[300px] text-sm'
-        })
+         const errtext = await res.text()
+         toast({
+          title : errtext,
+          className:'w-[300px] text-sm'
+         })
+         return ;
       }
 
-      console.log("test 3")
+      const result = await res.json()
 
       setCheckIfThoughtAdded(false)
 
@@ -85,13 +86,15 @@ export default function Page() {
         const res = await fetch("/api/getallThought")
 
         if(res.status != 200){
-          const data = await res.json()
-          console.error(data?.message)
+          const errtext = await res.text()
+         toast({
+          title : errtext,
+          className:'w-[300px] text-sm'
+         })
+         return ;
         }
 
         const data = await res.json()
-
-        console.log(data)
 
         setFetchedthoughtfromBackend(data?.data)
 
@@ -101,7 +104,7 @@ export default function Page() {
     }
 
      fetchallthoughtfrombackend();
-  },[newThoughtCreated,checkThoughtDeleted])
+  },[newThoughtCreated,checkThoughtDeleted,toast])
 
 
   // func for deleting thought
@@ -117,14 +120,17 @@ export default function Page() {
           method : 'DELETE'
         })
 
-        const data = await res.json()
-         
+        
         if(res.status != 200){
+          const errtext = await res.text()
           toast({
-            title : data?.message,
-            variant : 'destructive'
+           title : errtext,
+           className:'w-[300px] text-sm'
           })
+          return ;
         } 
+        
+        const data = await res.json()
 
         toast({
           title : data?.message,
@@ -182,7 +188,7 @@ export default function Page() {
             </p>
             <p className='pl-3 '>
               <span >{'->'} </span> 
-              <span className='opacity-40 italic  animate-pulse'>things you can't discuss with anyone...</span>
+              <span className='opacity-40 italic animate-pulse'>things you cannot discuss with anyone...</span>
             </p>
             <p className=' pl-3 '>
               <span >{'->'} </span> 

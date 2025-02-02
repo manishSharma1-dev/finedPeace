@@ -44,14 +44,17 @@ export default function Page() {
           body : JSON.stringify({ oldpassword : data?.oldpassword , newpassword : data?.newpassword })
         })
 
-        const result = await res.json()
-
+        
         if(res.status != 200){
+          const errText = await res.text()
           toast({
-            title : result?.message,
-            className:'w-[300px] text-sm'
+            title : errText,
+            className : 'w-[300px] text-sm'
           })
+          return;
         }
+        
+        const result = await res.json()
 
         toast({
           title : result?.message,

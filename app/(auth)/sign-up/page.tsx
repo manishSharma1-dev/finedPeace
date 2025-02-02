@@ -44,14 +44,14 @@ export default function Page() {
                 throw new Error("Registration Repsonse null")
             }
 
-            console.log("Server Reponse",response.data)
-
             setCheckIfSign_up(false)
 
             router.replace('/sign-in') //move to sign-in page
 
         } catch (error) {
             console.error("User Registration failed",error)
+        } finally {
+          setCheckIfSign_up(false)
         }
     }
 

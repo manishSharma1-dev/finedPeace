@@ -48,10 +48,12 @@ export default function Page() {
       const res = await fetch('/api/userprofile')
 
       if(res.status != 200){
-        const data = await res.json()
+        const errText = await res.text()
         toast({
-          title : data?.message
+          title : errText,
+          className : 'w-[300px] text-sm'
         })
+        return;
       }
 
       const data = await res.json()
@@ -60,7 +62,7 @@ export default function Page() {
     }
 
     UserprofileData()
-  },[checkEmailUpdated,checkUsernameUpdated])
+  },[checkEmailUpdated,checkUsernameUpdated,toast])
 
   async function updateEmail() {
     try {
@@ -77,14 +79,17 @@ export default function Page() {
         body : JSON.stringify({ newEmail : newEmailValue })
       })
 
-      const data = await res.json()
-
+      
       if(res.status != 200){
+        const errText = await res.text()
         toast({
-          title : data?.message,
-          className :'w-[300px] text-sm'
+          title : errText,
+          className : 'w-[300px] text-sm'
         })
+        return;
       }
+      
+      const data = await res.json()
 
       toast({
         title : data?.message,
@@ -110,14 +115,17 @@ export default function Page() {
         },
         body : JSON.stringify({ newUsername : newUsernameValue })
       })
-      const data = await res.json()
-
+      
       if(res.status != 200){
+        const errText = await res.text()
         toast({
-          title : data?.message,
-          className :'w-[300px] text-sm'
+          title : errText,
+          className : 'w-[300px] text-sm'
         })
+        return;
       }
+
+      const data = await res.json()
 
       toast({
         title : data?.message,
