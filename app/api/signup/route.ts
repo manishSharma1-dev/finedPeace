@@ -2,7 +2,6 @@ import { UserModel } from "@/model/user.model";
 import { ConnectDb } from "@/connections/dbConnect";
 import bcrypt from "bcryptjs"
 import { NextResponse } from "next/server";
-import { User } from "@/model/user.model"
 
 export async function POST(request:Request) {
 
@@ -10,7 +9,7 @@ export async function POST(request:Request) {
 
     try {
         
-        const { username, fullName, email, password} : User = await request.json()
+        const { username, fullName, email, password} = await request.json()
 
         if(!username && !fullName && !email && !password){
             return NextResponse.json(

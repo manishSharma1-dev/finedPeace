@@ -4,14 +4,11 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { checkPasswordSchema } from '@/Schemas/CheckPasswordSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import axios from 'axios'
 import { useToast } from '@/hooks/use-toast'
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Loader2 } from 'lucide-react'
 
 export default function Page() {
 

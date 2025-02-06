@@ -1,25 +1,21 @@
 import mongoose from "mongoose";
 
-type connectionObject = {
-    isConnected? : number
-}
+let connection : boolean = false;
 
-const connection:connectionObject = {}
+export async function ConnectDb():Promise<void> {
 
-export async function ConnectDb():Promise <void>{
-    if(connection.isConnected){
-    } else  { 
+    if(connection == true){
+        console.log("Using Exisiting Db conn...")
+        return;
+    }
 
-        try {
-            const db = await mongoose.connect(`${process.env.MONGO_URI}Findpeace`)
-            connection.isConnected = db.connections[0].readyState
-            console.log("Mongo Db connected Successfully")
-            
-        } catch (error) {
-            console.error("Connecting Database Failed",error)
-        }
+    try {
+
+        await mongoose.connect(`${process.env.MONGO_URI}Findpeace`)
+        connection = true;
+        console.log("New DB conn.. established")
+        
+    } catch (error) {
+        console.log("Failed to Connect to DB...",error)
     }
 }
-
-// await mongoose.connect(`${process.env.MONOGO_URI}/findPeace`)
-// console.log("DataBase Connected Successfully")

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { Asterisk,LoaderIcon,MessageSquareQuote,XSquare } from "lucide-react"
+import { Asterisk,MessageSquareQuote,XSquare } from "lucide-react"
 import { useForm,FormProvider  } from 'react-hook-form'
 import { checkthoughtSchema } from '@/Schemas/CheckthoughtSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,6 +9,7 @@ import * as z from "zod"
 import { useToast } from '@/hooks/use-toast'
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
+import { error } from '@/types/types'
 
 type thoughtType = {
   _id : string;
@@ -48,7 +49,6 @@ export default function Page() {
       })
 
       
-
       if(res.status != 200){
          const errtext = await res.text()
          toast({
@@ -60,8 +60,6 @@ export default function Page() {
 
       const result = await res.json()
 
-      setCheckIfThoughtAdded(false)
-
       setNewThoughtCreated(!newThoughtCreated)
 
       toast({
@@ -69,13 +67,12 @@ export default function Page() {
         className:'w-[300px] text-sm'
       })
 
-      console.log(result?.data)
-
       form.reset()
 
-    } catch (error) {
+    } catch (error : error) {
+      console.log(error?.message ?? "Internal server Error")
+    } finally {
       setCheckIfThoughtAdded(false)
-      console.log(error ?? "Internal server Error")
     }
   }
 
@@ -87,19 +84,19 @@ export default function Page() {
 
         if(res.status != 200){
           const errtext = await res.text()
-         toast({
-          title : errtext,
-          className:'w-[300px] text-sm'
-         })
-         return ;
+          toast({
+            title : errtext,
+            className:'w-[300px] text-sm'
+          })
+          return ;
         }
 
         const data = await res.json()
 
         setFetchedthoughtfromBackend(data?.data)
 
-      } catch (error) {
-        console.error("Loading Thought Failed",error)
+      } catch (error : error) {
+        console.error("Loading Thought Failed",error?.message)
       } 
     }
 
@@ -120,7 +117,6 @@ export default function Page() {
           method : 'DELETE'
         })
 
-        
         if(res.status != 200){
           const errtext = await res.text()
           toast({
@@ -137,10 +133,10 @@ export default function Page() {
           className:'w-[300px] text-sm'
         })
 
-        setCheckThoughtDeleted(!checkThoughtDeleted)
-
       } catch (error) {
         console.error(error ?? "Internal Server Error")
+      } finally {
+        setCheckThoughtDeleted(!checkThoughtDeleted)
       }
   }
 

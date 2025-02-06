@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Loader } from 'lucide-react'
+import { error } from '@/types/types'
 
 
 export default function Page() {
@@ -48,7 +49,10 @@ export default function Page() {
           variant : 'destructive'
         })
 
+        return;
+
       }  else {
+
         toast({
           title : 'login Success',
           description : "Password match",
@@ -60,8 +64,8 @@ export default function Page() {
         router.replace('/dashboard/thoughts')
       }
 
-    } catch (error) {
-      console.error("Logging Failed",error)
+    } catch (error : error) {
+      console.error("Logging Failed",error?.message)
     } finally{
       setCheckIfLogin(false)
     }

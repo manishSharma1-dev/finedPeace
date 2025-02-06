@@ -12,8 +12,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Loader } from 'lucide-react'
 import { useState } from 'react'
+import { useToast } from '@/hooks/use-toast'
+import { error } from '@/types/types'
 
 export default function Page() {
+
+  const {toast} = useToast()
 
   const [checkIfSign_up,setCheckIfSign_up] = useState(false)
 
@@ -33,23 +37,35 @@ export default function Page() {
         try {
 
           setCheckIfSign_up(true)
-            const response = await axios.post('/api/signup',{
+            
+            const response = await fetch('/api/signup',{
+              method : 'POST',
+              headers : {
+                'Content-Type' : 'application/json'
+              },
+              body : JSON.stringify({ 
                 username : data?.username,
                 fullName : data?.fullName,
                 email : data?.email,
                 password  :data?.password
+              })
             })
 
-            if(!response){
-                throw new Error("Registration Repsonse null")
+            if(!response.ok){
+              const errText = await response.text()
+              toast({
+                title : errText,
+                variant : 'destructive'
+              })
+              return;
             }
 
             setCheckIfSign_up(false)
 
             router.replace('/sign-in') //move to sign-in page
 
-        } catch (error) {
-            console.error("User Registration failed",error)
+        } catch (error : error) {
+            console.error("User Registration failed",error?.message)
         } finally {
           setCheckIfSign_up(false)
         }

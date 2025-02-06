@@ -6,8 +6,6 @@ import { Label } from '@/components/ui/label'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
 import { EditIcon } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Loader2 } from 'lucide-react'
 
 import {
   Dialog,
@@ -18,6 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { error } from '@/types/types'
 
 interface userdata {
   username : string,
@@ -45,20 +44,26 @@ export default function Page() {
   useEffect(() => {
 
     async function UserprofileData () {
-      const res = await fetch('/api/userprofile')
+      try {
 
-      if(res.status != 200){
-        const errText = await res.text()
-        toast({
-          title : errText,
-          className : 'w-[300px] text-sm'
-        })
-        return;
+        const res = await fetch('/api/userprofile')
+
+        if(!res.ok){
+          const errText = await res.text()
+          toast({
+            title : errText,
+            className : 'w-[300px] text-sm'
+          })
+          return;
+        }
+  
+        const data = await res.json()
+  
+        setUserData(data?.data)
+
+      } catch (error : error) {
+        console.log(error?.message || "Failed to fetch User profile")
       }
-
-      const data = await res.json()
-
-      setUserData(data?.data)
     }
 
     UserprofileData()
@@ -69,8 +74,6 @@ export default function Page() {
 
       setCheckButtonStateLoading(true)
 
-      console.log(newEmailValue)
-
       const res = await fetch('/api/updateEmail',{
         method : 'PUT',
         headers : {
@@ -79,7 +82,6 @@ export default function Page() {
         body : JSON.stringify({ newEmail : newEmailValue })
       })
 
-      
       if(res.status != 200){
         const errText = await res.text()
         toast({
@@ -98,8 +100,8 @@ export default function Page() {
 
       setCheckEmailUpdated(!checkEmailUpdated)
       
-    } catch (error) {
-      console.error(error ?? 'Internal server error')
+    } catch (error : error) {
+      console.error(error?.message ?? 'Internal server error')
     } finally {
       setCheckButtonStateLoading(false)
     }
@@ -107,7 +109,9 @@ export default function Page() {
 
   async function updateUsername() {
     try {
+
       setCheckButtonStateLoading(true)
+      
       const res = await fetch('/api/updateUsername',{
         method : 'PUT',
         headers : { 
