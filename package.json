@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.439.0",
     "mongoose": "^8.6.1",
+    "motion": "^12.4.0",
     "next": "^14.2.23",
     "next-auth": "^4.24.7",
     "node-cache": "^5.1.2",
