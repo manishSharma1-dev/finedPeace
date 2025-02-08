@@ -238,7 +238,7 @@ export default function Page() {
         </div>
         
         <div className=" absolute bottom-0 flex w-full flex-col items-center justify-center overflow-hidden rounded-lg md:shadow-xl xs:block xs:visible lg:hidden lg:invisibe">
-          <Dock direction="middle" className='xs:px-16 xs:my-2 sm:px-20 sm:py-3'>
+          <Dock direction="middle" className='xs:px-3 xs:my-2 sm:px-4 sm:py-1'>
             <DockIcon>
               <User2Icon className="size-6" onClick={() => router.push('/dashboard/profile')}/>
             </DockIcon>

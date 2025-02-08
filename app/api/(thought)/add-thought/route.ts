@@ -34,18 +34,12 @@ export async function POST(req:Request) {
             )
         }
 
-        console.log("test 4")
-
         const session_username = session.user?.username
-
-        console.log("test 5")
 
         const thoughtCreated = await thoughtModel.create({
             username : session_username,
             content : thought
         })
-
-        console.log("test 6")
 
         if(!thoughtCreated){
             return NextResponse.json(
@@ -58,8 +52,6 @@ export async function POST(req:Request) {
             )
         }
 
-
-        console.log("test 7")
 
         return NextResponse.json(
             {

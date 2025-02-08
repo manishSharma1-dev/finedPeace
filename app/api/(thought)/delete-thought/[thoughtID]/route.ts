@@ -24,13 +24,24 @@ export async function DELETE(request:Request) {
             )
         }
 
+        if(!thoughtID){
+            return NextResponse.json(
+                {
+                    message : "Invalid Thought id"
+                },
+                {
+                    status : 400
+                }
+            )
+        }
+
         //--------------------
+
           const thought = await thoughtModel.findById(thoughtID)
 
           if(!thought){
             return NextResponse.json(
                 {
-                    success : false,
                     message : "thought -id Failed"
                 },
                 {

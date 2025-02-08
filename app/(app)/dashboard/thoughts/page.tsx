@@ -25,8 +25,9 @@ type thoughtType = {
 export default function Page() {
   const [thoughtFetchedformBackend,setFetchedthoughtfromBackend] = useState<thoughtType[]>([])
   const [newThoughtCreated,setNewThoughtCreated] = useState(false)
-  const [checkThoughtDeleted,setCheckThoughtDeleted] = useState(false)
+  const [thoughtDeleted,setthougthDeleted] = useState(false)
 
+  const [checkThoughtDeleted,setCheckThoughtDeleted] = useState(false)
   const [checkifthoughtAdded,setCheckIfThoughtAdded] = useState(false)
 
   const { toast } = useToast()
@@ -67,24 +68,26 @@ export default function Page() {
 
       const result = await res.json()
 
-      setNewThoughtCreated(!newThoughtCreated)
-
+      
       toast({
         title : result?.message,
         className:'w-[300px] text-sm'
       })
-
+      
       form.reset()
 
+      setNewThoughtCreated(!newThoughtCreated)
+
     } catch (error : error) {
-      console.log(error?.message ?? "Internal server Error")
+      console.log(error?.message ?? `Internal server Error ${checkThoughtDeleted} `)
+      
     } finally {
       setCheckIfThoughtAdded(false)
     }
   }
 
   // function for fetching All thought
-  useEffect(() =>{
+  useEffect(() => {
     const fetchallthoughtfrombackend = async() => {
       try {
         const res = await fetch("/api/getallThought")
@@ -104,11 +107,14 @@ export default function Page() {
 
       } catch (error : error) {
         console.error("Loading Thought Failed",error?.message)
+        toast({
+          title : error?.message ?? "Loading thought failed",
+          className : 'w-[300px] text-sm'
+        })
       } 
     }
-
      fetchallthoughtfrombackend();
-  },[newThoughtCreated,checkThoughtDeleted,toast])
+  },[newThoughtCreated,thoughtDeleted,toast]) 
 
 
   // func for deleting thought
@@ -140,10 +146,18 @@ export default function Page() {
           className:'w-[300px] text-sm'
         })
 
-      } catch (error) {
+        setthougthDeleted(!thoughtDeleted)
+
+      } catch (error : error) {
         console.error(error ?? "Internal Server Error")
+
+        toast({
+          title : error?.message ?? "failed thought delete",
+          className:'w-[300px] text-sm'
+        })
+
       } finally {
-        setCheckThoughtDeleted(!checkThoughtDeleted)
+        setCheckThoughtDeleted(false)
       }
   }
 
@@ -161,7 +175,7 @@ export default function Page() {
                       <span className='xs:text-xl sm:text-xl lg:text-sm 2xl:text-base 3xl:text-lg 4xl:text-2xl 6xl:text-[2.7rem] 6xl:leading-4 7xl:text-6xl'>{`by - ${thoughtField?.username}`}</span>
                       <XSquare size={14} className='cursor-pointer hover:opacity-40 xs:w-4 xs:h-4 sm:w-5 sm:h-5 lg:w-4 lg:h-4 3xl:w-5 3xl:h-5 4xl:w-6 4xl:h-6 6xl:w-9 6xl:h-9 7xl:w-12 7xl:h-12' onClick={() => handledeltethoughtfromthebackend(thoughtField?._id)} />
                     </div>
-                    <p className='text-xs opacity-65 w-[80%] xs:text-base sm:text-lg lg:text-xs 2xl:text-sm 3xl:text-base 4xl:text-xl 6xl:text-[2.1rem] 6xl:leading-[2.7rem] 7xl:text-[2.7rem] 7xl:leading-[3.5rem]'>{thoughtField?.content}</p>
+                    <p className='text-xs opacity-65 w-[80%] xs:text-sm sm:text-base lg:text-xs 2xl:text-sm 3xl:text-base 4xl:text-xl 6xl:text-[2.1rem] 6xl:leading-[2.7rem] 7xl:text-[2.7rem] 7xl:leading-[3.5rem]'>{thoughtField?.content}</p>
                   </div>
                 ))
               } 
@@ -246,7 +260,7 @@ export default function Page() {
       </div>
 
       <div className=" absolute bottom-0 flex w-full flex-col items-center justify-center overflow-hidden rounded-lg md:shadow-xl xs:block xs:visible lg:hidden lg:invisibe">
-          <Dock direction="middle" className='xs:px-16 xs:my-2 sm:px-20 sm:py-3'>
+          <Dock direction="middle" className='xs:px-3 xs:my-2 sm:px-4 sm:py-1'>
             <DockIcon>
               <User2Icon className="size-6" onClick={() => router.push('/dashboard/profile')}/>
             </DockIcon>
