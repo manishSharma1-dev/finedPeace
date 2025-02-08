@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
 import { EditIcon } from 'lucide-react'
+import { Dock, DockIcon } from "@/components/dock";
+import { User2Icon, LucideFeather, PlusCircle } from 'lucide-react'
 
 import {
   Dialog,
@@ -34,7 +36,6 @@ export default function Page() {
   const [checkButtonStateLoading,setCheckButtonStateLoading] = useState(false)
 
   const { toast } = useToast()
-
   const router = useRouter()
 
   function handleNavigationtoChangepassword(){
@@ -82,7 +83,7 @@ export default function Page() {
         body : JSON.stringify({ newEmail : newEmailValue })
       })
 
-      if(res.status != 200){
+      if(!res.ok){
         const errText = await res.text()
         toast({
           title : errText,
@@ -120,7 +121,7 @@ export default function Page() {
         body : JSON.stringify({ newUsername : newUsernameValue })
       })
       
-      if(res.status != 200){
+      if(!res.ok){
         const errText = await res.text()
         toast({
           title : errText,
@@ -146,16 +147,16 @@ export default function Page() {
   }
 
   return (
-      <div>
-        <p className='text-center pt-8'>User Information 📒!</p>
-        <div className='flex flex-col items-center gap-8 pt-10 '>
-          <div className='flex flex-col gap-3 w-[30%]'>
-            <Label className='text-xs opacity-75 flex justify-between'>
-              <span>Username:</span>
+      <div className='relative min-h-screen'>
+        <p className='text-center pt-8  xs:text-2xl sm:text-3xl md:text-2xl lg:text-lg 4xl:text-3xl 6xl:text-4xl 7xl:text-6xl'>User Information 📒!</p>
+        <div className='flex flex-col items-center gap-8 pt-10 6xl:pt-20 6xl:gap-16'>
+          <div className='flex flex-col gap-3 xs:w-[80%] sm:w-[60%] md:w-[50%] lg:w-[35%] 2xl:w-[32%] 6xl:gap-10'>
+            <Label className='text-xs opacity-75 flex items-center justify-between '>
+              <span className='xs:text-xl sm:text-2xl lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl'>Username:</span>
               <span>
               <Dialog>
                 <DialogTrigger asChild>
-                  <EditIcon size={13} className='cursor-pointer hover:opacity-70' />
+                  <EditIcon size={13} className='cursor-pointer hover:opacity-70 xs:size-6 lg:size-4 3xl:size-5 4xl:size-6 6xl:size-8 7xl:size-11' />
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -186,21 +187,21 @@ export default function Page() {
               </Dialog>
               </span>
             </Label>
-            <Input type='text' placeholder='username' value={userdata?.username}/>
+            <Input type='text' placeholder='username' value={userdata?.username} className='xs:text-lg xs:py-3 xs:px-4 sm:text-xl lg:text-base 4xl:text-2xl 4xl:py-6 4xl:px-6 6xl:text-4xl 6xl:py-10 6xl:px-12 7xl:text-5xl 7xl:py-12'/>
           </div>
 
-          <div className='flex flex-col gap-3 w-[30%]'>
-            <Label className='text-xs opacity-75'>fullname: </Label>
-            <Input type='text' placeholder='Fullname' value={userdata?.fullName}/>
+          <div className='flex flex-col gap-3 xs:w-[80%] sm:w-[60%] md:w-[50%] lg:w-[35%] 2xl:w-[32%] 6xl:gap-10'>
+            <Label className='text-xs opacity-75 xs:text-xl sm:text-2xl lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl'>fullname: </Label>
+            <Input type='text' placeholder='Fullname' value={userdata?.fullName} className='xs:text-lg xs:py-3 xs:px-4 sm:text-xl lg:text-base 4xl:text-2xl 4xl:py-6 4xl:px-6 6xl:text-4xl 6xl:py-10 6xl:px-12 7xl:text-5xl 7xl:py-12'/>
           </div>
 
-          <div className='flex flex-col gap-3 w-[30%]'>
+          <div className='flex flex-col gap-3 xs:w-[80%] sm:w-[60%] md:w-[50%] lg:w-[35%] 2xl:w-[32%] 6xl:gap-10'>
             <Label className='text-xs opacity-75 flex justify-between'>
-              <span>Email:</span>
+              <span className='xs:text-xl sm:text-2xl lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl'>Email:</span>
               <span>
               <Dialog>
                 <DialogTrigger asChild>
-                  <EditIcon size={13} className='cursor-pointer hover:opacity-70' />
+                  <EditIcon size={13} className='cursor-pointer hover:opacity-70 xs:size-6 lg:size-4 3xl:size-5 4xl:size-6 6xl:size-8 7xl:size-11' />
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -231,10 +232,25 @@ export default function Page() {
               </Dialog>
               </span>
             </Label>
-            <Input type='email' placeholder='Email' value={userdata?.email}/>
+            <Input type='email' placeholder='Email' value={userdata?.email} className='xs:text-lg xs:py-3 xs:px-4 sm:text-xl lg:text-base 4xl:text-2xl 4xl:py-6 4xl:px-6 6xl:text-4xl 6xl:py-10 6xl:px-12 7xl:text-5xl 7xl:py-12'/>
           </div>
-          <p className='text-sm  hover:opacity-50 cursor-pointer underline underline-offset-8 decoration-red-200' onClick={handleNavigationtoChangepassword}>Change Password 👀?</p>
+          <p className='text-sm  hover:opacity-50 cursor-pointer underline underline-offset-8 decoration-red-200 xs:text-lg xs:py-3 xs:px-4 sm:text-xl lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl' onClick={handleNavigationtoChangepassword}>Change Password 👀?</p>
         </div>
+        
+        <div className=" absolute bottom-0 flex w-full flex-col items-center justify-center overflow-hidden rounded-lg md:shadow-xl xs:block xs:visible lg:hidden lg:invisibe">
+          <Dock direction="middle" className='xs:px-16 xs:my-2 sm:px-20 sm:py-3'>
+            <DockIcon>
+              <User2Icon className="size-6" onClick={() => router.push('/dashboard/profile')}/>
+            </DockIcon>
+            <DockIcon>
+              <LucideFeather className="size-6" onClick={() => router.push('/dashboard/thoughts')} />
+            </DockIcon>
+            <DockIcon>
+              <PlusCircle className="size-6" onClick={() => router.push('/addthought')} />
+            </DockIcon>
+          </Dock>
+        </div>
+
       </div>
   )
 }

@@ -11,6 +11,10 @@ import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessa
 import { Textarea } from '@/components/ui/textarea'
 import { error } from '@/types/types'
 import { LoaderIcon } from 'lucide-react'
+import { Dock, DockIcon } from "@/components/dock";
+import { User2Icon, LucideFeather, PlusCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+
 
 type thoughtType = {
   _id : string;
@@ -26,6 +30,8 @@ export default function Page() {
   const [checkifthoughtAdded,setCheckIfThoughtAdded] = useState(false)
 
   const { toast } = useToast()
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof checkthoughtSchema>>({
     resolver : zodResolver(checkthoughtSchema),
@@ -50,7 +56,7 @@ export default function Page() {
       })
 
       
-      if(res.status != 200){
+      if(!res.ok){
          const errtext = await res.text()
          toast({
           title : errtext,
@@ -83,7 +89,7 @@ export default function Page() {
       try {
         const res = await fetch("/api/getallThought")
 
-        if(res.status != 200){
+        if(!res.ok){
           const errtext = await res.text()
           toast({
             title : errtext,
@@ -101,7 +107,7 @@ export default function Page() {
       } 
     }
 
-    //  fetchallthoughtfrombackend();
+     fetchallthoughtfrombackend();
   },[newThoughtCreated,checkThoughtDeleted,toast])
 
 
@@ -118,7 +124,7 @@ export default function Page() {
           method : 'DELETE'
         })
 
-        if(res.status != 200){
+        if(!res.ok){
           const errtext = await res.text()
           toast({
            title : errtext,
@@ -142,16 +148,14 @@ export default function Page() {
   }
 
   return (
-   <div className='grid xs:grid-cols-1 sm:grid-cols-1 lg:grid-cols-6'>
+   <div className='grid xs:grid-cols-1 sm:grid-cols-1 lg:grid-cols-6 relative'>
 
       <div className='min-h-screen border-r max-h-screen h-auto overflow-y-auto scrollbar-hide xs:col-start-1 xs:col-end-2 sm:col-start-1 sm:col-end-2  lg:col-start-1 lg:col-end-5'>
         {
           thoughtFetchedformBackend.length > 0 ? (
-            // flex flex-col items-center gap-2 py-4
             <div className='flex flex-col gap-2 py-2 xs:px-3 sm:px-4 lg:px-32 lg:items-center 3xl:gap-3 4xl:px-48 6xl:px-60 7xl:px-80 7xl:gap-6'>
               {
                 thoughtFetchedformBackend.map((thoughtField:thoughtType,idx:number) => (
-                  // flex flex-col gap-2 text-sm w-[27rem] bg-neutral-800 pt-2 pb-2 pl-4 px-8 rounded cursor-pointer
                   <div className='flex flex-col gap-2 text-sm bg-neutral-800 pt-2 pb-2 pl-4 px-8 rounded hover:bg-neutral-700 xs:w-full sm:w-full lg:px-5 3xl:gap-5 6xl:gap-8 6xl:px-8 6xl:py-7 7xl:px-9 7xl:py-8 7xl:gap-12' key={idx}>
                     <div className='flex items-center justify-between pb-2'>
                       <span className='xs:text-xl sm:text-xl lg:text-sm 2xl:text-base 3xl:text-lg 4xl:text-2xl 6xl:text-[2.7rem] 6xl:leading-4 7xl:text-6xl'>{`by - ${thoughtField?.username}`}</span>
@@ -240,6 +244,21 @@ export default function Page() {
       </div>
 
       </div>
+
+      <div className=" absolute bottom-0 flex w-full flex-col items-center justify-center overflow-hidden rounded-lg md:shadow-xl xs:block xs:visible lg:hidden lg:invisibe">
+          <Dock direction="middle" className='xs:px-16 xs:my-2 sm:px-20 sm:py-3'>
+            <DockIcon>
+              <User2Icon className="size-6" onClick={() => router.push('/dashboard/profile')}/>
+            </DockIcon>
+            <DockIcon>
+              <LucideFeather className="size-6" onClick={() => router.push('/dashboard/thoughts')} />
+            </DockIcon>
+            <DockIcon>
+              <PlusCircle className="size-6" onClick={() => router.push('/addthought')} />
+            </DockIcon>
+          </Dock>
+      </div>
+
    </div>
   )
 }
