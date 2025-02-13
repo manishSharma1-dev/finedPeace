@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
+export const metadata: Metadata = { 
   title: "Dumpthought",
   description: "A place to share your words.",
 };

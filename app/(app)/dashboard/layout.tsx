@@ -27,7 +27,7 @@ const DashboardLayout: React.FC<Dashboardlayoutprops> = (props) => {
                     </p>
                 </div>
                 <div className='text-xs xl:text-xm 2xl:text-base 4xl:text-xl 4xl:px-8 4xl:py-4 6xl:py-6 6xl:px-10 7xl:px-14 7xl:py-8'>
-                    <button className='hover:bg-gray-300 p-1 pl-3 pr-3 border rounded-lg hover:text-black  4xl:px-6 4xl:py-2 6xl:py-4 6xl:px-10 6xl:text-2xl 7xl:px-14 7xl:py-6 7xl:text-3xl' onClick={() => signOut({ callbackUrl: '/sign-in' })}>Logout</button>
+                    <button className='hover:bg-gray-300 p-1 pl-3 pr-3 border rounded-lg hover:text-black  4xl:px-6 4xl:py-2 6xl:py-4 6xl:px-10 6xl:text-2xl 7xl:px-14 7xl:py-6 7xl:text-3xl' onClick={() => signOut({ callbackUrl: 'https://finedpeace.onrender.com/sign-in' })}>Logout</button>
                 </div>
             </div>
           </div>
