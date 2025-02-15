@@ -107,7 +107,7 @@ export default function Page() {
 
         setFetchedthoughtfromBackend(data?.data)
 
-      console.log("fetched thoughts",data?.data)
+        console.log("fetched thoughts",data?.data)
 
       } catch (error : error) {
         console.error("Loading Thought Failed",error?.message)

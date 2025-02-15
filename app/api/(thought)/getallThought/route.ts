@@ -1,9 +1,6 @@
 import { thoughtModel } from "@/model/thoughts.model";
 import { ConnectDb } from "@/connections/dbConnect";
-// import NodeCache from "node-cache"
 import { NextResponse } from "next/server";
-
-// const myCache = new NodeCache();
 
 export async function GET(request:Request) {
     try {

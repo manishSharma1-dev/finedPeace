@@ -52,6 +52,8 @@ export async function POST(req:Request) {
             )
         }
 
+        await thoughtCreated.save({ validateBeforeSave : true })
+
 
         return NextResponse.json(
             {

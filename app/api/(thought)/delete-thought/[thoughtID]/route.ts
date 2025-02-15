@@ -77,6 +77,8 @@ export async function DELETE(request:Request) {
                 )
             }
 
+            await thoughtDeleted.save({ validateBeforeSave : true })
+
             return NextResponse.json(
                     {
                         message : "Thought -delete",
