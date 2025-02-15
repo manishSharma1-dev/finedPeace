@@ -90,6 +90,8 @@ export default function Page() {
   useEffect(() => {
     const fetchallthoughtfrombackend = async() => {
       try {
+      console.log("fetching thoughts")
+
         const res = await fetch("/api/getallThought")
 
         if(!res.ok){
@@ -104,6 +106,8 @@ export default function Page() {
         const data = await res.json()
 
         setFetchedthoughtfromBackend(data?.data)
+
+      console.log("fetched thoughts",data?.data)
 
       } catch (error : error) {
         console.error("Loading Thought Failed",error?.message)
@@ -170,19 +174,19 @@ export default function Page() {
             <div className='flex flex-col gap-2 py-2 xs:px-3 sm:px-4 lg:px-32 lg:items-center 3xl:gap-3 4xl:px-48 6xl:px-60 7xl:px-80 7xl:gap-6'>
               {
                 thoughtFetchedformBackend.map((thoughtField:thoughtType,idx:number) => (
-                  <div className='flex flex-col gap-2 text-sm bg-neutral-800 pt-2 pb-2 pl-4 px-8 rounded hover:bg-neutral-700 xs:w-full sm:w-full lg:px-5 3xl:gap-5 6xl:gap-8 6xl:px-8 6xl:py-7 7xl:px-9 7xl:py-8 7xl:gap-12' key={idx}>
+                  <div className='flex flex-col gap-2 text-sm md:bg-neutral-800 pt-2 pb-2 pl-4 px-8 md:rounded xs:border-b xs:border-white md:border-none  xs:rounded-none xs:hover:bg-zinc-800 lg:hover:bg-neutral-700 xs:w-full sm:w-full lg:px-5 3xl:gap-5 6xl:gap-8 6xl:px-8 6xl:py-7 7xl:px-9 7xl:py-8 7xl:gap-12' key={idx}>
                     <div className='flex items-center justify-between pb-2'>
-                      <span className='xs:text-xl sm:text-xl lg:text-sm 2xl:text-base 3xl:text-lg 4xl:text-2xl 6xl:text-[2.7rem] 6xl:leading-4 7xl:text-6xl'>{`by - ${thoughtField?.username}`}</span>
+                      <span className='xs:text-sm sm:text-sm lg:text-sm 2xl:text-base 3xl:text-lg 4xl:text-2xl 6xl:text-[2.7rem] 6xl:leading-4 7xl:text-6xl'>{`by - ${thoughtField?.username}`}</span>
                       <XSquare size={14} className='cursor-pointer hover:opacity-40 xs:w-4 xs:h-4 sm:w-5 sm:h-5 lg:w-4 lg:h-4 3xl:w-5 3xl:h-5 4xl:w-6 4xl:h-6 6xl:w-9 6xl:h-9 7xl:w-12 7xl:h-12' onClick={() => handledeltethoughtfromthebackend(thoughtField?._id)} />
                     </div>
-                    <p className='text-xs opacity-65 w-[80%] xs:text-sm sm:text-base lg:text-xs 2xl:text-sm 3xl:text-base 4xl:text-xl 6xl:text-[2.1rem] 6xl:leading-[2.7rem] 7xl:text-[2.7rem] 7xl:leading-[3.5rem]'>{thoughtField?.content}</p>
+                    <p className='text-xs opacity-65 xs:w-[95%] md:w-[80%] xs:text-[12px] sm:text-base lg:text-xs 2xl:text-sm 3xl:text-base 4xl:text-xl 6xl:text-[2.1rem] 6xl:leading-[2.7rem] 7xl:text-[2.7rem] 7xl:leading-[3.5rem]'>{thoughtField?.content}</p>
                   </div>
                 ))
               } 
             </div>
           ) : ( 
             <div className='flex justify-center items-center min-h-screen xs:px-4 sm:px-4 lg:px-0'>
-              <p className='text-sm opacity-70 hover:opacity-100 cursor-pointer animate-pulse xs:text-2xl sm:text-2xl lg:text-sm 2xl:text-base 4xl:text-lg 7xl:text-5xl'>Wait, fetching thoughts🎈 !</p>
+              <p className='text-sm opacity-70 hover:opacity-100 cursor-pointer animate-pulse xs:text-base lg:text-sm 2xl:text-base 4xl:text-lg 7xl:text-5xl'>Wait, fetching thoughts🎈 !</p>
             </div>
           )
         }
@@ -259,16 +263,16 @@ export default function Page() {
 
       </div>
 
-      <div className=" absolute bottom-0 flex w-full flex-col items-center justify-center overflow-hidden rounded-lg md:shadow-xl xs:block xs:visible lg:hidden lg:invisibe">
-          <Dock direction="middle" className='xs:px-3 xs:my-2 sm:px-4 sm:py-1'>
+      <div className=" absolute bottom-3 flex w-full flex-col items-center justify-center overflow-hidden rounded-lg md:shadow-xl xs:block xs:visible lg:hidden lg:invisibe">
+          <Dock direction="middle" className='xs:px-3 sm:px-4 py-0'>
             <DockIcon>
-              <User2Icon className="size-6" onClick={() => router.push('/dashboard/profile')}/>
+              <User2Icon className="size-4" onClick={() => router.push('/dashboard/profile')}/>
             </DockIcon>
             <DockIcon>
-              <LucideFeather className="size-6" onClick={() => router.push('/dashboard/thoughts')} />
+              <LucideFeather className="size-4" onClick={() => router.push('/dashboard/thoughts')} />
             </DockIcon>
             <DockIcon>
-              <PlusCircle className="size-6" onClick={() => router.push('/addthought')} />
+              <PlusCircle className="size-4" onClick={() => router.push('/addthought')} />
             </DockIcon>
           </Dock>
       </div>
