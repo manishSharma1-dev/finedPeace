@@ -45,7 +45,8 @@ export default function Page() {
 
 
   // function for creating new thoughts
-  const onSubmit = async(data:z.infer<typeof checkthoughtSchema>) => {
+  // const onSubmit = async(data:z.infer<typeof checkthoughtSchema>)
+  async function onSubmit(data: z.infer<typeof checkthoughtSchema>) {
     try {
 
       setCheckIfThoughtAdded(true)
@@ -90,7 +91,8 @@ export default function Page() {
 
   // function for fetching All thought
   useEffect(() => {
-    const fetchallthoughtfrombackend = async() => {
+    // const fetchallthoughtfrombackend = async() => {
+    async function fetchallthoughtfrombackend() {
       try {
       console.log("fetching thoughts")
 
@@ -120,7 +122,7 @@ export default function Page() {
       } 
     }
      fetchallthoughtfrombackend();
-  },[newThoughtCreated,thoughtDeleted]) 
+  },[newThoughtCreated,thoughtDeleted,toast]) 
 
 
   // func for deleting thought

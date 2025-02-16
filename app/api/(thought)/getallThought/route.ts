@@ -20,7 +20,7 @@ export async function GET(request:Request) {
             )
         }
 
-        console.log(thoughts)
+        console.log("fetching thought from the backend",thoughts)
 
         return NextResponse.json(
             {
