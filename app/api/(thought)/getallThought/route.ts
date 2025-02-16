@@ -28,11 +28,15 @@ export async function GET(request:Request) {
                 data  : thoughts
             },
             {
-                status : 200
+                status : 200,
+                headers : {
+                    "Cache-Control": "no-store, max-age=0",
+                }
             }
         ) 
         
     } catch (error) {
+        console.log("fetching all thought failed",error)
         return NextResponse.json(
             {
                 success : false,

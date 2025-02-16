@@ -94,7 +94,7 @@ export default function Page() {
       try {
       console.log("fetching thoughts")
 
-        const res = await fetch(`/api/getallThought`,{
+        const res = await fetch(`/api/getallThought?timestamp=${Date.now()}`,{
           cache : 'no-store',
           headers : {
             'Cache-Control' : 'no-cache, no-store, must-revalidate',
