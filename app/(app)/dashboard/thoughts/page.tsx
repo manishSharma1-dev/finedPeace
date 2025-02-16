@@ -30,7 +30,6 @@ export default function Page() {
   const [newThoughtCreated,setNewThoughtCreated] = useState(false)
   const [thoughtDeleted,setthougthDeleted] = useState(false)
 
-  const [checkThoughtDeleted,setCheckThoughtDeleted] = useState(false)
   const [checkifthoughtAdded,setCheckIfThoughtAdded] = useState(false)
 
   const { toast } = useToast()
@@ -56,7 +55,8 @@ export default function Page() {
         headers : {
           'Content-Type' : 'application/json'
         },
-        body : JSON.stringify({ thought : data?.thought })
+        body : JSON.stringify({ thought : data?.thought }),
+         cache: 'no-store'
       })
 
       
@@ -70,19 +70,18 @@ export default function Page() {
       }
 
       const result = await res.json()
+      form.reset()
 
-      setNewThoughtCreated(!newThoughtCreated)
+      setNewThoughtCreated(prev => !prev)
 
       toast({
         title : result?.message,
         className:'w-[300px] text-sm'
       })
       
-      form.reset()
-
 
     } catch (error : error) {
-      console.log(error?.message ?? `Internal server Error ${checkThoughtDeleted} `)
+      console.log(error?.message ?? "Failed to add thought")
       
     } finally {
       setCheckIfThoughtAdded(false)
@@ -102,15 +101,11 @@ export default function Page() {
             'Pragma': 'no-cache',
             'Expires' : '0'
           },
-          next : { revalidate : 0 }
         })
 
         if(!res.ok){
           const errtext = await res.text()
-          toast({
-            title : errtext,
-            className:'w-[300px] text-sm'
-          })
+          console.error(errtext)
           return ;
         }
 
@@ -122,10 +117,6 @@ export default function Page() {
 
       } catch (error : error) {
         console.error("Loading Thought Failed",error?.message)
-        toast({
-          title : error?.message ?? "Loading thought failed",
-          className : 'w-[300px] text-sm'
-        })
       } 
     }
      fetchallthoughtfrombackend();
@@ -142,7 +133,8 @@ export default function Page() {
         })
 
         const res = await fetch(`/api/delete-thought/${thoughtID}`,{
-          method : 'DELETE'
+          method : 'DELETE',
+          cache: 'no-store'
         })
 
         if(!res.ok){
@@ -156,7 +148,7 @@ export default function Page() {
         
         const data = await res.json()
 
-        setthougthDeleted(!thoughtDeleted)
+        setthougthDeleted(prev => !prev)
 
         toast({
           title : data?.message,
@@ -171,8 +163,6 @@ export default function Page() {
           className:'w-[300px] text-sm'
         })
 
-      } finally {
-        setCheckThoughtDeleted(false)
       }
   }
 

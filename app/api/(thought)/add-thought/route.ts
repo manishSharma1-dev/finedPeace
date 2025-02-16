@@ -10,7 +10,7 @@ export async function POST(req:Request) {
 
         const { thought } = await req.json()
 
-        if(!thought){
+        if(!thought || thought.trim() === ''){
             return NextResponse.json(
                 {
                     message : "Invalid Thought Property"
@@ -29,7 +29,7 @@ export async function POST(req:Request) {
                     message : "You are Logged out"
                 },
                 {
-                    status : 400
+                    status : 401
                 }
             )
         }
@@ -38,7 +38,8 @@ export async function POST(req:Request) {
 
         const thoughtCreated = await thoughtModel.create({
             username : session_username,
-            content : thought
+            content : thought,
+            createdAt : new Date()
         })
 
         if(!thoughtCreated){

@@ -9,10 +9,10 @@ export async function GET(request:Request) {
 
         const thoughts = await thoughtModel.find({ }).sort({ createdAt : -1 })
 
-        if(!thoughts){
+        if(!thoughts || thoughts.length === 0){
             return NextResponse.json(
                 {
-                    message: "Thoughts fetching Failed"
+                    message: "No thoughts found"
                 },
                 {
                     status : 500
