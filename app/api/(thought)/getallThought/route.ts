@@ -36,7 +36,7 @@ export async function GET(request:Request) {
         return NextResponse.json(
             {
                 success : false,
-                messsage : "Fatching all thoughts failed"
+                messsage : error ?? "Fatching all thoughts failed"
             },
             {
                 status : 500

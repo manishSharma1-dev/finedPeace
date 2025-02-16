@@ -20,10 +20,13 @@ type thoughtType = {
   _id : string;
   content : string;
   username : string;
+  createdAt : string;
+  updatedAt : string;
 }
 
 export default function Page() {
   const [thoughtFetchedformBackend,setFetchedthoughtfromBackend] = useState<thoughtType[]>([])
+
   const [newThoughtCreated,setNewThoughtCreated] = useState(false)
   const [thoughtDeleted,setthougthDeleted] = useState(false)
 
@@ -68,7 +71,8 @@ export default function Page() {
 
       const result = await res.json()
 
-      
+      setNewThoughtCreated(!newThoughtCreated)
+
       toast({
         title : result?.message,
         className:'w-[300px] text-sm'
@@ -76,7 +80,6 @@ export default function Page() {
       
       form.reset()
 
-      setNewThoughtCreated(!newThoughtCreated)
 
     } catch (error : error) {
       console.log(error?.message ?? `Internal server Error ${checkThoughtDeleted} `)
@@ -92,7 +95,15 @@ export default function Page() {
       try {
       console.log("fetching thoughts")
 
-        const res = await fetch(`/api/getallThought?timestamp=${Date.now()}`)
+        const res = await fetch(`/api/getallThought`,{
+          cache : 'no-store',
+          headers : {
+            'Cache-Control' : 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires' : '0'
+          },
+          next : { revalidate : 0 }
+        })
 
         if(!res.ok){
           const errtext = await res.text()
@@ -118,7 +129,7 @@ export default function Page() {
       } 
     }
      fetchallthoughtfrombackend();
-  },[newThoughtCreated,thoughtDeleted,toast]) 
+  },[newThoughtCreated,thoughtDeleted]) 
 
 
   // func for deleting thought
@@ -145,12 +156,12 @@ export default function Page() {
         
         const data = await res.json()
 
+        setthougthDeleted(!thoughtDeleted)
+
         toast({
           title : data?.message,
           className:'w-[300px] text-sm'
         })
-
-        setthougthDeleted(!thoughtDeleted)
 
       } catch (error : error) {
         console.error(error ?? "Internal Server Error")
