@@ -24,7 +24,7 @@ import mongoose from "mongoose";
 
 let isConnected = false;
 
-export async function connectDb(): Promise<void> {
+export async function ConnectDb(): Promise<void> {
   if (isConnected) {
     console.log("using exisiting conn")
     return; 
