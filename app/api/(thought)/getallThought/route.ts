@@ -20,6 +20,8 @@ export async function GET(request:Request) {
             )
         }
 
+        console.log(thoughts)
+
         return NextResponse.json(
             {
                 message: "Fetched All Thought",

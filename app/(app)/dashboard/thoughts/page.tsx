@@ -92,7 +92,7 @@ export default function Page() {
       try {
       console.log("fetching thoughts")
 
-        const res = await fetch("/api/getallThought")
+        const res = await fetch(`/api/getallThought?timestamp=${Date.now()}`)
 
         if(!res.ok){
           const errtext = await res.text()
