@@ -94,6 +94,7 @@ export default function Page() {
     // const fetchallthoughtfrombackend = async() => {
     async function fetchallthoughtfrombackend() {
       try {
+
       console.log("fetching thoughts")
 
         const res = await fetch(`/api/getallThought?timestamp=${Date.now()}`,{
@@ -115,7 +116,7 @@ export default function Page() {
 
         setFetchedthoughtfromBackend(data?.data)
 
-        console.log("fetched thoughts",data?.data)
+        console.log("fetched thoughtt")
 
       } catch (error : error) {
         console.error("Loading Thought Failed",error?.message)

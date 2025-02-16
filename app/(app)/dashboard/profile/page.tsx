@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast'
 import { EditIcon } from 'lucide-react'
 import { Dock, DockIcon } from "@/components/dock";
 import { User2Icon, LucideFeather, PlusCircle } from 'lucide-react'
+import { signOut } from "next-auth/react"
 
 import {
   Dialog,
@@ -148,15 +149,22 @@ export default function Page() {
 
   return (
       <div className='relative min-h-screen'>
-        <p className='text-center pt-8  xs:text-2xl sm:text-3xl md:text-2xl lg:text-lg 4xl:text-3xl 6xl:text-4xl 7xl:text-6xl'>User Information 📒!</p>
+
+        <p className='text-center mt-8 xs:hidden xs:invisible md:visible md:block  xs:text-base sm:text-xl md:text-2xl lg:text-lg 4xl:text-3xl 6xl:text-4xl 7xl:text-6xl'>User Information 📒!</p>
+        
+        <div className='flex justify-between items-center xs:px-8 xs:visible md:invisible md:hidden'>
+          <p className='text-center mt-8  xs:text-base sm:text-xl md:text-2xl lg:text-lg 4xl:text-3xl 6xl:text-4xl 7xl:text-6xl'>User Information 📒!</p>
+          <p className='xs:visible xs:block lg:hidden lg:invisible text-center mt-8  bg-white text-black px-3 py-1 rounded xs:text-sm sm:text-xl md:text-2xl lg:text-lg 4xl:text-3xl 6xl:text-4xl 7xl:text-6xl hover:bg-black hover:text-white border border-black' onClick={() => signOut({ callbackUrl: '/sign-in' })}>logout</p>
+        </div>
+
         <div className='flex flex-col items-center gap-8 pt-10 6xl:pt-20 6xl:gap-16'>
           <div className='flex flex-col gap-3 xs:w-[80%] sm:w-[60%] md:w-[50%] lg:w-[35%] 2xl:w-[32%] 6xl:gap-10'>
             <Label className='text-xs opacity-75 flex items-center justify-between '>
-              <span className='xs:text-xl sm:text-2xl lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl'>Username:</span>
+              <span className='xs:text-sm sm:text-base lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl'>Username:</span>
               <span>
               <Dialog>
                 <DialogTrigger asChild>
-                  <EditIcon size={13} className='cursor-pointer hover:opacity-70 xs:size-6 lg:size-4 3xl:size-5 4xl:size-6 6xl:size-8 7xl:size-11' />
+                  <EditIcon size={13} className='cursor-pointer hover:opacity-70 xs:size-4 lg:size-4 3xl:size-5 4xl:size-6 6xl:size-8 7xl:size-11' />
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -172,7 +180,7 @@ export default function Page() {
                       </Label>
                       <Input
                         id="username"
-                        className="col-span-3"
+                        className="col-span-3 xs:text-sm lg:text-base"
                         value={newUsernameValue}
                         onChange={(e) => setNewUsernamaValue(e.target.value)}
                       />
@@ -191,17 +199,17 @@ export default function Page() {
           </div>
 
           <div className='flex flex-col gap-3 xs:w-[80%] sm:w-[60%] md:w-[50%] lg:w-[35%] 2xl:w-[32%] 6xl:gap-10'>
-            <Label className='text-xs opacity-75 xs:text-xl sm:text-2xl lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl'>fullname: </Label>
+            <Label className='text-xs opacity-75 xs:text-sm sm:text-base lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl'>fullname: </Label>
             <Input type='text' placeholder='Fullname' value={userdata?.fullName} className='xs:text-lg xs:py-3 xs:px-4 sm:text-xl lg:text-base 4xl:text-2xl 4xl:py-6 4xl:px-6 6xl:text-4xl 6xl:py-10 6xl:px-12 7xl:text-5xl 7xl:py-12'/>
           </div>
 
           <div className='flex flex-col gap-3 xs:w-[80%] sm:w-[60%] md:w-[50%] lg:w-[35%] 2xl:w-[32%] 6xl:gap-10'>
             <Label className='text-xs opacity-75 flex justify-between'>
-              <span className='xs:text-xl sm:text-2xl lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl'>Email:</span>
+              <span className='xs:text-sm sm:text-base lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl'>Email:</span>
               <span>
               <Dialog>
                 <DialogTrigger asChild>
-                  <EditIcon size={13} className='cursor-pointer hover:opacity-70 xs:size-6 lg:size-4 3xl:size-5 4xl:size-6 6xl:size-8 7xl:size-11' />
+                  <EditIcon size={13} className='cursor-pointer hover:opacity-70 xs:size-4 lg:size-4 3xl:size-5 4xl:size-6 6xl:size-8 7xl:size-11' />
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -217,7 +225,7 @@ export default function Page() {
                       </Label>
                       <Input
                         id="email"
-                        className="col-span-3"
+                        className="col-span-3 xs:text-sm lg:text-base"
                         value={newEmailValue}
                         onChange={(e) => setNewEmailValue(e.target.value)}
                       />
@@ -234,19 +242,19 @@ export default function Page() {
             </Label>
             <Input type='email' placeholder='Email' value={userdata?.email} className='xs:text-lg xs:py-3 xs:px-4 sm:text-xl lg:text-base 4xl:text-2xl 4xl:py-6 4xl:px-6 6xl:text-4xl 6xl:py-10 6xl:px-12 7xl:text-5xl 7xl:py-12'/>
           </div>
-          <p className='text-sm  hover:opacity-50 cursor-pointer underline underline-offset-8 decoration-red-200 xs:text-lg xs:py-3 xs:px-4 sm:text-xl lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl' onClick={handleNavigationtoChangepassword}>Change Password 👀?</p>
+          <p className='text-sm  hover:opacity-50 cursor-pointer underline underline-offset-8 decoration-red-200 xs:text-sm xs:py-3 xs:px-4 sm:text-base lg:text-base 4xl:text-2xl 6xl:text-4xl 7xl:text-5xl' onClick={handleNavigationtoChangepassword}>Change Password 👀?</p>
         </div>
         
-        <div className=" absolute bottom-0 flex w-full flex-col items-center justify-center overflow-hidden rounded-lg md:shadow-xl xs:block xs:visible lg:hidden lg:invisibe">
-          <Dock direction="middle" className='xs:px-3 xs:my-2 sm:px-4 sm:py-1'>
+        <div className=" absolute bottom-3 flex w-full flex-col items-center justify-center overflow-hidden rounded-lg md:shadow-xl xs:block xs:visible lg:hidden lg:invisibe">
+          <Dock direction="middle" className='xs:px-3 sm:px-4'>
             <DockIcon>
-              <User2Icon className="size-6" onClick={() => router.push('/dashboard/profile')}/>
+              <User2Icon className="size-4" onClick={() => router.push('/dashboard/profile')}/>
             </DockIcon>
             <DockIcon>
-              <LucideFeather className="size-6" onClick={() => router.push('/dashboard/thoughts')} />
+              <LucideFeather className="size-4" onClick={() => router.push('/dashboard/thoughts')} />
             </DockIcon>
             <DockIcon>
-              <PlusCircle className="size-6" onClick={() => router.push('/addthought')} />
+              <PlusCircle className="size-4" onClick={() => router.push('/addthought')} />
             </DockIcon>
           </Dock>
         </div>

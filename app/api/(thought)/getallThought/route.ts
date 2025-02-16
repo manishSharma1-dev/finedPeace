@@ -5,13 +5,9 @@ import { NextResponse } from "next/server";
 export async function GET(request:Request) {
     try {
 
-        console.log("making get request to getAllthought")
-
         await ConnectDb()
 
         const thoughts = await thoughtModel.find({ }).sort({ createdAt : -1 })
-
-        console.log("fetching thought from get all thoughts")
 
         if(!thoughts || thoughts.length === 0){
             return NextResponse.json(
@@ -23,8 +19,6 @@ export async function GET(request:Request) {
                 }
             )
         }
-
-        console.log("fetching thought from the backend",thoughts)
 
         return NextResponse.json(
             {
