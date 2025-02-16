@@ -2,10 +2,7 @@ import { UserModel } from "@/model/user.model";
 import { ConnectDb } from "@/connections/dbConnect";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
-import NodeCache from 'node-cache'
 import { NextResponse } from "next/server";
-
-const myCache = new NodeCache()
 
 export async function GET(request : Request) {
     try {
@@ -24,20 +21,6 @@ export async function GET(request : Request) {
             )
         }
 
-        const cacheKey = JSON.stringify("userProfile")
-        const CachedResult = myCache.get(cacheKey)
-
-        if(CachedResult){
-            return NextResponse.json(
-                {
-                    message : "Profile data is already in cache",
-                    data : CachedResult
-                },
-                {
-                    status : 200
-                }
-            )
-        } else {
             const userID = session?.user._id
 
             const user = await UserModel.findById(userID)
@@ -45,15 +28,13 @@ export async function GET(request : Request) {
             if(!user){
                 return NextResponse.json(
                         {
-                            message : "Invalud -userId"
+                            message : "Invalid -userId"
                         },
                         {
                             status : 400
                         }
                     )
             }
-
-            myCache.set(cacheKey,user,3600)
 
             return NextResponse.json(
                 {
@@ -64,7 +45,6 @@ export async function GET(request : Request) {
                     status : 200
                 }
             )
-        }
         
     } catch (error) {
         return NextResponse.json(
